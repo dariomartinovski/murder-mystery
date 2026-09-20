@@ -1,13 +1,17 @@
 // Phase 9 — polish. Real input against headless Chrome.
 // Usage: node test/phase9-polish.test.mjs
 import { spawn } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 
 const PORT = 9340
 const ROOT = '/Users/dario.martinovski/murder-mystery'
 const FILE = `file://${ROOT}/index.html`
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const SRC = readFileSync(`${ROOT}/index.html`, 'utf8')
+// source of truth is now spread across index.html + css/ + js/
+const SRC = [`${ROOT}/index.html`,
+  ...readdirSync(`${ROOT}/css`).sort().map(f => `${ROOT}/css/${f}`),
+  ...readdirSync(`${ROOT}/js`).sort().map(f => `${ROOT}/js/${f}`),
+].map(p => readFileSync(p, 'utf8')).join('\n')
 
 const results = []
 const rec = (name, pass, info = '') => {

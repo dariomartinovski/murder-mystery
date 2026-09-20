@@ -1,0 +1,101 @@
+
+PASS  0. panel markup present and closed on load
+PASS  0. closed panel is parked off to the right (translateX 100%)
+PASS  0. closed panel is click-through
+PASS  0. transform transition is 0.3s ease-in-out
+PASS  0. no horizontal overflow from the parked panel
+PASS  0. closed panel does not intercept scene clicks
+PASS  1. table-a: arrives at approach then opens panel
+PASS  3. table-a: name / initial / avatar colour correct
+PASS  3. table-a: state tracks the npc
+PASS  3. table-a: opens on its state-aware entry node
+PASS  3. table-a: node text typed out in full
+PASS  3. table-a: all visible options rendered
+PASS  1. table-b: arrives at approach then opens panel
+PASS  3. table-b: name / initial / avatar colour correct
+PASS  3. table-b: state tracks the npc
+PASS  3. table-b: opens on its state-aware entry node
+PASS  3. table-b: node text typed out in full
+PASS  3. table-b: all visible options rendered
+PASS  1. table-c: arrives at approach then opens panel
+PASS  3. table-c: name / initial / avatar colour correct
+PASS  3. table-c: state tracks the npc
+PASS  3. table-c: opens on its state-aware entry node
+PASS  3. table-c: node text typed out in full
+PASS  3. table-c: all visible options rendered
+PASS  1. table-d: arrives at approach then opens panel
+PASS  3. table-d: name / initial / avatar colour correct
+PASS  3. table-d: state tracks the npc
+PASS  3. table-d: opens on its state-aware entry node
+PASS  3. table-d: node text typed out in full
+PASS  3. table-d: all visible options rendered
+PASS  1. bar: arrives at approach then opens panel
+PASS  3. bar: name / initial / avatar colour correct
+PASS  3. bar: state tracks the npc
+PASS  3. bar: opens on its state-aware entry node
+PASS  3. bar: node text typed out in full
+PASS  3. bar: all visible options rendered
+PASS  1. door-wc: arrives at approach then opens panel
+PASS  3. door-wc: name / initial / avatar colour correct
+PASS  3. door-wc: state tracks the npc
+PASS  3. door-wc: opens on its state-aware entry node
+PASS  3. door-wc: node text typed out in full
+PASS  3. door-wc: all visible options rendered
+PASS  2. panel is mid-slide partway through (no jump)
+PASS  4. text types out character by character
+PASS  4. typed text is a clean prefix, never scrambled
+PASS  5. options hidden while the greeting is typing
+PASS  5. options revealed after ~300ms
+PASS  5. options are real <button> elements
+PASS  5. hidden options are not hit-testable
+PASS  6. option with a next advances to that node and stays open
+PASS  6. advancing runs the new node onEnter (G.foundNote)
+PASS  6. onEnter adds the note to the inventory (Phase 5 wiring)
+PASS  6. new node text begins typing
+PASS  6. options re-render for the new node
+PASS  6. new node text completes
+PASS  6. next:null option closes the panel
+PASS  6. close clears node state
+PASS  7. close button closes the panel
+PASS  8. Escape closes the panel
+PASS  8. Escape clears npc state
+PASS  9. floor click while open does not move her
+PASS  9. that same click closed the panel
+PASS  10. floor click after closing moves her normally
+PASS  10. clicking inside the panel keeps it open
+PASS  11. panel covers only the right 340px
+PASS  11. floor left of the panel is still hit-testable
+PASS  11. panel does occlude the right side (it is on top)
+PASS  11. no full-screen backdrop was added
+PASS  12. door-exit still walks to its approach point
+PASS  12. door-exit opens no panel (absent from NPCS)
+PASS  12. door-exit absence is reported, not silent
+PASS  12. NPCS has no door-exit entry
+PASS  12. NPCS covers the other six interactables
+PASS  13. closing mid-typewriter stops the interval
+PASS  13. switching NPC mid-type starts the new text cleanly
+PASS  13. switched text is not contaminated by the previous NPC
+PASS  13. header follows the newest NPC
+PASS  13. only one typewriter ran (no char doubling)
+PASS  13. reopening shows a clean node text
+PASS  13. timers quiesce after rapid open/close cycling
+PASS  13. text frozen after rapid cycling (no orphaned interval)
+PASS  13. panel left closed after rapid cycling
+PASS  14. no uncaught page exceptions
+PASS  15. Phase 1 element counts intact
+PASS  15. Phase 1+2 ids all present
+PASS  15. scene still exactly 960x640
+PASS  15. nine classic scripts, init.js last
+PASS  15. scene tail is inventory then toast (item modal lifted to body in Phase 7)
+PASS  15. Phase 2 arrival log replaced by openDialogue(el.id)
+PASS  15. no leftover "Arrived at:" log in source
+PASS  15. floor-click guards added ahead of the interactable guard
+PASS  15. Phase 2 movement internals untouched
+PASS  15. Phase 1 CSS palette untouched
+PASS  15. Phase 4 handleOption placeholder fully replaced
+PASS  15. Phase 6 replaced all three puzzle placeholders
+
+95/95 passed
+
+Page console:
+  [warning] No dialogue defined for: door-exit

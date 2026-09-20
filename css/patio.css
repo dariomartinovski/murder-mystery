@@ -1,0 +1,583 @@
+/* =========================================================
+   PHASE 7 — SCREEN SYSTEM
+   ========================================================= */
+.game-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #080400;
+
+  /* Hidden by default */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.game-screen--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* =========================================================
+   PHASE 7 — PATIO SCENE
+   ========================================================= */
+.patio-scene {
+  position: relative;
+  width: 960px;
+  height: 640px;
+  overflow: hidden;
+  background: #0A0603;
+}
+
+/* Night garden — right side, darker green-black */
+.patio-garden {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 280px;
+  background: linear-gradient(to right, #0A0603, #0D1008);
+  border-left: 1px solid rgba(40, 60, 20, 0.3);
+}
+
+/* Subtle garden texture — a few abstract plant shapes */
+.patio-garden::before {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 60px;
+  height: 80px;
+  background: radial-gradient(ellipse at bottom, #1A2810 0%, transparent 70%);
+  border-radius: 50% 50% 0 0;
+}
+
+.patio-garden::after {
+  content: '';
+  position: absolute;
+  bottom: 30px;
+  right: 40px;
+  width: 40px;
+  height: 60px;
+  background: radial-gradient(ellipse at bottom, #1A2810 0%, transparent 70%);
+  border-radius: 50% 50% 0 0;
+}
+
+/* Restaurant wall on the left */
+.patio-restaurant-wall {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  background: #1A0F08;
+  border-right: 2px solid #2C1810;
+}
+
+/* Back door in the wall */
+.patio-back-door {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 52px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  background: #2C1810;
+  border: 1px solid #4A2E18;
+  border-radius: 2px 2px 0 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.patio-back-door:hover { background: #3D2415; }
+
+.patio-back-door .door__sign {
+  font-family: 'Lora', serif;
+  font-size: 0.45rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: rgba(244, 220, 180, 0.4);
+}
+
+/* Patio floor */
+.patio-floor {
+  position: absolute;
+  left: 80px;
+  right: 280px;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(45deg, #0E0906, #0E0906 20px, #100B07 20px, #100B07 40px);
+}
+
+/* Patio tables. Sized explicitly: Phase 1's .table is inset:0, so without
+   a box here every patio tabletop would collapse to 0x0. */
+.patio-table {
+  position: absolute;
+  width: 64px;
+  height: 40px;
+}
+
+/* Occupied table 6 */
+#patio-table-6 { left: 120px; top: 160px; }
+
+/* Target table 7 — has phone on it */
+#patio-table-7 { left: 380px; top: 260px; }
+
+/* Empty table 8 */
+#patio-table-8 { left: 560px; top: 160px; }
+
+/* Phone glow on table 7 — hints it is interactable */
+.phone-glow {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 32px;
+  background: rgba(100, 160, 255, 0.15);
+  border: 1px solid rgba(100, 160, 255, 0.3);
+  border-radius: 3px;
+  animation: phonePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes phonePulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(100, 160, 255, 0.2); }
+  50%      { box-shadow: 0 0 16px rgba(100, 160, 255, 0.5); }
+}
+
+/* Table 7 highlight */
+.table--patio-target { border-color: rgba(244, 168, 67, 0.2); }
+
+/* Patio patron shapes — anonymous */
+.patio-patron {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #3A3A3A;
+}
+
+.patio-patron--a { top: -30px; left: 8px; }
+.patio-patron--b { top: -30px; left: 36px; }
+
+/* Ashtray — decorative, on table 7 */
+.patio-ashtray {
+  position: absolute;
+  left: 404px;
+  top: 252px;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(244, 220, 180, 0.2);
+  border-radius: 50%;
+  background: rgba(40, 30, 20, 0.8);
+}
+
+/* =========================================================
+   PHASE 7 — PHONE MODAL
+   ========================================================= */
+.phone-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.phone-modal.phone-modal--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.phone-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+}
+
+.phone-frame {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  height: 440px;
+  overflow: hidden;
+  background: #0D0D0F;
+  border: 2px solid #2A2A2E;
+  border-radius: 28px;
+  box-shadow: 0 0 0 1px #1A1A1E, 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+/* Scoped to the open state so the entry animation replays each open */
+.phone-modal--open .phone-frame { animation: phoneIn 0.3s ease-out; }
+
+@keyframes phoneIn {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);   opacity: 1; }
+}
+
+/* Cracked screen effect — bottom right corner */
+.phone-frame::after {
+  content: '';
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transform: rotate(15deg);
+  pointer-events: none;
+}
+
+.phone-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.85rem 0.35rem;
+  background: #0D0D0F;
+  flex-shrink: 0;
+}
+
+.phone-time {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.phone-zone {
+  font-family: 'Lora', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.phone-screen {
+  flex: 1;
+  overflow-y: auto;
+  background: #111114;
+  padding: 0.75rem;
+}
+
+.phone-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  background: #0D0D0F;
+  flex-shrink: 0;
+}
+
+.phone-home-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.phone-home-btn:hover { border-color: rgba(255, 255, 255, 0.35); }
+
+/* ── Phone home screen ── */
+.phone-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.phone-app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.phone-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.phone-app:hover { background: rgba(255, 255, 255, 0.05); }
+
+.phone-app__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 1.2rem;
+}
+
+.phone-app__icon--locked::after {
+  content: '🔒';
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  padding: 1px;
+  background: #111114;
+  border-radius: 50%;
+  font-size: 0.65rem;
+}
+
+.phone-app__label {
+  font-family: 'Lora', serif;
+  font-size: 0.6rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* note_app */
+.phone-app--notes .phone-app__icon { background: linear-gradient(135deg, #F9A825, #F57F17); }
+
+/* chat_app */
+.phone-app--chat .phone-app__icon { background: linear-gradient(135deg, #1565C0, #0D47A1); }
+
+/* ── Note app screen ── */
+.phone-noteapp {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.phone-noteapp__header {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: 'Lora', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.phone-note {
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  font-family: 'Lora', serif;
+  font-size: 0.72rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.phone-note strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── PIN screen ── */
+.phone-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.phone-pin__label {
+  font-family: 'Lora', serif;
+  font-size: 0.65rem;
+  text-align: center;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.phone-pin__dots {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.phone-pin__dot {
+  width: 10px;
+  height: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.1s;
+}
+
+.phone-pin__dot--filled { background: rgba(255, 255, 255, 0.8); }
+
+.phone-pin__keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.phone-pin__key {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.phone-pin__key:hover  { background: rgba(255, 255, 255, 0.12); }
+.phone-pin__key:active { background: rgba(255, 255, 255, 0.2); }
+
+.phone-pin__key--delete {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.phone-pin__feedback {
+  min-height: 1em;
+  font-family: 'Lora', serif;
+  font-size: 0.65rem;
+  text-align: center;
+  color: rgba(200, 80, 80, 0.85);
+}
+
+/* ── Chat app screen ── */
+.phone-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.phone-chat__header {
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: 'Lora', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.phone-message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.phone-message--sent     { align-items: flex-end; }
+.phone-message--received { align-items: flex-start; }
+
+.phone-message__sender {
+  padding: 0 0.4rem;
+  font-family: 'Lora', serif;
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.phone-message__bubble {
+  max-width: 85%;
+  padding: 0.4rem 0.65rem;
+  border-radius: 10px;
+  font-family: 'Lora', serif;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.phone-message--sent .phone-message__bubble {
+  background: #1565C0;
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-right-radius: 3px;
+}
+
+.phone-message--received .phone-message__bubble {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom-left-radius: 3px;
+}
+
+.phone-chat__cta {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  background: rgba(244, 168, 67, 0.1);
+  border: 1px solid rgba(244, 168, 67, 0.25);
+  border-radius: 6px;
+  font-family: 'Lora', serif;
+  font-size: 0.68rem;
+  font-style: italic;
+  line-height: 1.6;
+  text-align: center;
+  color: rgba(244, 220, 180, 0.85);
+}
+
+/* =========================================================
+   PHASE 7 — FINAL SCREEN
+   ========================================================= */
+.final-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 520px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.final-card__eyebrow {
+  font-family: 'Lora', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: rgba(244, 168, 67, 0.45);
+}
+
+.final-card__message {
+  font-family: 'Lora', serif;
+  font-size: 0.92rem;
+  line-height: 2;
+  color: rgba(244, 220, 180, 0.85);
+}
+
+.final-card__detail {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(244, 168, 67, 0.2);
+  border-radius: 4px;
+  font-family: 'Lora', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  color: rgba(244, 168, 67, 0.9);
+}
+
+.final-card__sub {
+  font-family: 'Lora', serif;
+  font-size: 0.65rem;
+  font-style: italic;
+  color: rgba(244, 220, 180, 0.25);
+}
+

@@ -371,7 +371,7 @@ rec('9. half-wall does not trap her in one half',
     exitComment: document.documentElement.innerHTML.length > 0,
     inlineStyles: [...document.querySelectorAll('.scene *')].filter(e => e.getAttribute('style')).map(e => e.id || e.className),
     scriptCount: document.querySelectorAll('script').length,
-    scriptIsLast: (() => { const k = [...document.body.children]; return k[k.length-1].id === 'item-modal' && k[k.length-2].tagName === 'SCRIPT' })(),
+    scriptIsLast: (() => { const k = [...document.body.children]; return k.filter(e => e.id === 'item-modal').length === 1 && k[k.length-1].tagName === 'SCRIPT' && document.scripts[document.scripts.length-1].src.endsWith('js/init.js') })(),
     sceneSize: (() => { const s = document.querySelector('.scene'); return s.offsetWidth + 'x' + s.offsetHeight })(),
   })`)
   rec('11. all Phase 1 ids still present', phase1.ids)
@@ -386,7 +386,7 @@ rec('9. half-wall does not trap her in one half',
   rec('11. no inline styles in markup (only runtime-written ones present)',
     phase1.inlineStyles.every((id) => ['player', 'dialogue-avatar'].includes(id)),
     JSON.stringify(phase1.inlineStyles))
-  rec('11. exactly one script, last child of body', phase1.scriptCount === 1 && phase1.scriptIsLast,
+  rec('11. nine classic scripts, init.js last', phase1.scriptCount === 9 && phase1.scriptIsLast,
     `count=${phase1.scriptCount} last=${phase1.scriptIsLast}`)
 }
 

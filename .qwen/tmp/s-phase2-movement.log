@@ -1,0 +1,134 @@
+PASS  1. player element exists with avatar + shadow
+PASS  1. starts beside Our Table (178,354)
+PASS  1. left/top are centre-offset by 14px
+PASS  1. no slide-in animation on load
+PASS  2. scene uses the custom cursor (system cursor hidden)
+PASS  2. interactables also hide the system cursor
+PASS  3. floor click moves her there (centre coords)
+PASS  3. full-scene #bar wrapper did NOT hijack the click
+PASS  3. vignette overlay does not block clicks
+PASS  3. player--moving applied during walk
+PASS  3. player--moving cleared on arrival
+PASS  4. short step clamps to 200ms minimum
+PASS  4. mid walk is proportional (~1.8ms/px)
+PASS  4. long walk clamps to 900ms maximum
+PASS  4. near < mid < far
+PASS  5. ignored: Our Table is solid
+PASS  5. ignored: unclickable table is solid
+PASS  5. ignored: bartender standing behind the bar
+PASS  5. ignored: behind the bar is solid
+PASS  5. ignored: outside left wall
+PASS  5. ignored: outside top wall
+PASS  5. ignored: outside bottom wall
+PASS  5. solid-but-interactable table-a walks to approach, is not ignored
+PASS  5. solid-but-interactable bar walks to approach, is not ignored
+PASS  5. click outside the scene does nothing
+PASS  6. table-a: real click reaches approach (572,238)
+PASS  6. table-a: approach point is walkable
+PASS  6. table-a: stops off to the side, not on top
+PASS  6. table-b: real click reaches approach (182,238)
+PASS  6. table-b: approach point is walkable
+PASS  6. table-b: stops off to the side, not on top
+PASS  6. table-c: real click reaches approach (400,488)
+PASS  6. table-c: approach point is walkable
+PASS  6. table-c: stops off to the side, not on top
+PASS  6. table-d: real click reaches approach (620,350)
+PASS  6. table-d: approach point is walkable
+PASS  6. table-d: stops off to the side, not on top
+PASS  6. bar: real click reaches approach (752,450)
+PASS  6. bar: approach point is walkable
+PASS  6. bar: stops off to the side, not on top
+PASS  6. door-wc: real click reaches approach (82,80)
+PASS  6. door-wc: approach point is walkable
+PASS  6. door-wc: stops off to the side, not on top
+PASS  6. door-exit: real click reaches approach (856,80)
+PASS  6. door-exit: approach point is walkable
+PASS  6. door-exit: stops off to the side, not on top
+PASS  7. hover shows subtle amber ring on table
+PASS  7. ring is a 1px hairline, not a bright outline
+PASS  7. hover brightens the tabletop
+PASS  7. ring clears when not hovering
+PASS  7. hover brightens the bar counter
+PASS  7. hover brightens the WC door
+PASS  7. door handle ::after not clobbered by ring rule
+PASS  8. superseded walk does not fire its stale callback
+PASS  8. ends at the newest target
+PASS  8. movement flag reset after supersede
+PASS  9. half-wall does not trap her in one half
+PASS  10. no uncaught page exceptions
+PASS  11. all Phase 1 ids still present
+PASS  11. Phase 1 element counts intact (6 tables, 7 npcs, 2 floors, 2 plants)
+PASS  11. vignette + separator still present
+PASS  11. scene still exactly 960x640
+PASS  11. no inline styles in markup (only runtime-written ones present)
+PASS  11. nine classic scripts, init.js last
+
+PASS  1. player element exists with avatar + shadow
+PASS  1. starts beside Our Table (178,354)
+PASS  1. left/top are centre-offset by 14px
+PASS  1. no slide-in animation on load
+PASS  2. scene uses the custom cursor (system cursor hidden)
+PASS  2. interactables also hide the system cursor
+PASS  3. floor click moves her there (centre coords)
+PASS  3. full-scene #bar wrapper did NOT hijack the click
+PASS  3. vignette overlay does not block clicks
+PASS  3. player--moving applied during walk
+PASS  3. player--moving cleared on arrival
+PASS  4. short step clamps to 200ms minimum
+PASS  4. mid walk is proportional (~1.8ms/px)
+PASS  4. long walk clamps to 900ms maximum
+PASS  4. near < mid < far
+PASS  5. ignored: Our Table is solid
+PASS  5. ignored: unclickable table is solid
+PASS  5. ignored: bartender standing behind the bar
+PASS  5. ignored: behind the bar is solid
+PASS  5. ignored: outside left wall
+PASS  5. ignored: outside top wall
+PASS  5. ignored: outside bottom wall
+PASS  5. solid-but-interactable table-a walks to approach, is not ignored
+PASS  5. solid-but-interactable bar walks to approach, is not ignored
+PASS  5. click outside the scene does nothing
+PASS  6. table-a: real click reaches approach (572,238)
+PASS  6. table-a: approach point is walkable
+PASS  6. table-a: stops off to the side, not on top
+PASS  6. table-b: real click reaches approach (182,238)
+PASS  6. table-b: approach point is walkable
+PASS  6. table-b: stops off to the side, not on top
+PASS  6. table-c: real click reaches approach (400,488)
+PASS  6. table-c: approach point is walkable
+PASS  6. table-c: stops off to the side, not on top
+PASS  6. table-d: real click reaches approach (620,350)
+PASS  6. table-d: approach point is walkable
+PASS  6. table-d: stops off to the side, not on top
+PASS  6. bar: real click reaches approach (752,450)
+PASS  6. bar: approach point is walkable
+PASS  6. bar: stops off to the side, not on top
+PASS  6. door-wc: real click reaches approach (82,80)
+PASS  6. door-wc: approach point is walkable
+PASS  6. door-wc: stops off to the side, not on top
+PASS  6. door-exit: real click reaches approach (856,80)
+PASS  6. door-exit: approach point is walkable
+PASS  6. door-exit: stops off to the side, not on top
+PASS  7. hover shows subtle amber ring on table
+PASS  7. ring is a 1px hairline, not a bright outline
+PASS  7. hover brightens the tabletop
+PASS  7. ring clears when not hovering
+PASS  7. hover brightens the bar counter
+PASS  7. hover brightens the WC door
+PASS  7. door handle ::after not clobbered by ring rule
+PASS  8. superseded walk does not fire its stale callback
+PASS  8. ends at the newest target
+PASS  8. movement flag reset after supersede
+PASS  9. half-wall does not trap her in one half
+PASS  10. no uncaught page exceptions
+PASS  11. all Phase 1 ids still present
+PASS  11. Phase 1 element counts intact (6 tables, 7 npcs, 2 floors, 2 plants)
+PASS  11. vignette + separator still present
+PASS  11. scene still exactly 960x640
+PASS  11. no inline styles in markup (only runtime-written ones present)
+PASS  11. nine classic scripts, init.js last
+
+64/64 passed
+
+Console output captured from page:
+  No dialogue defined for: door-exit

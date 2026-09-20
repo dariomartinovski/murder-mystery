@@ -1,13 +1,17 @@
 // Phase 6 — puzzles. Real clicks against headless Chrome.
 // Usage: node test/phase6-puzzles.test.mjs
 import { spawn } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 
 const PORT = 9337
 const ROOT = '/Users/dario.martinovski/murder-mystery'
 const FILE = `file://${ROOT}/index.html`
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const SRC = readFileSync(`${ROOT}/index.html`, 'utf8')
+// source of truth is now spread across index.html + css/ + js/
+const SRC = [`${ROOT}/index.html`,
+  ...readdirSync(`${ROOT}/css`).sort().map(f => `${ROOT}/css/${f}`),
+  ...readdirSync(`${ROOT}/js`).sort().map(f => `${ROOT}/js/${f}`),
+].map(p => readFileSync(p, 'utf8')).join('\n')
 
 const results = []
 const rec = (name, pass, info = '') => {
@@ -359,9 +363,9 @@ await closeItem()
      'function renderNode(node, npcId)', 'function addToInventory(itemId)', 'function openItemModal(itemId)',
      'function wirePuzzleInputs(itemId)', 'const NODES = {', 'dialogue__options--pending',
      'if (itemModal.classList.contains(\'item-modal--open\')) return'].every((s) => SRC.includes(s)))
-  rec('14. still one script, last child of body',
-    await evaluate(`document.querySelectorAll('script').length === 1 &&
-      (() => { const k = [...document.body.children]; return k[k.length-1].id === 'item-modal' && k[k.length-2].tagName === 'SCRIPT' })()`))
+  rec('14. nine classic scripts, init.js last',
+    await evaluate(`document.querySelectorAll('script').length === 9 &&
+      (() => { const k = [...document.body.children]; return k.filter(e => e.id === 'item-modal').length === 1 && k[k.length-1].tagName === 'SCRIPT' && document.scripts[document.scripts.length-1].src.endsWith('js/init.js') })()`))
   rec('14. scene still exactly 960x640',
     await evaluate(`(() => { const s = document.querySelector('.scene'); return s.offsetWidth === 960 && s.offsetHeight === 640 })()`))
   rec('14. scene tail is toast then the sound toggle',

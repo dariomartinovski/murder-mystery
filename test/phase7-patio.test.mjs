@@ -2,13 +2,17 @@
 // clicks and real typed input; no page-side console shortcuts anywhere.
 // Usage: node test/phase7-patio.test.mjs
 import { spawn } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 
 const PORT = 9338
 const ROOT = '/Users/dario.martinovski/murder-mystery'
 const FILE = `file://${ROOT}/index.html`
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const SRC = readFileSync(`${ROOT}/index.html`, 'utf8')
+// source of truth is now spread across index.html + css/ + js/
+const SRC = [`${ROOT}/index.html`,
+  ...readdirSync(`${ROOT}/css`).sort().map(f => `${ROOT}/css/${f}`),
+  ...readdirSync(`${ROOT}/js`).sort().map(f => `${ROOT}/js/${f}`),
+].map(p => readFileSync(p, 'utf8')).join('\n')
 
 const results = []
 const rec = (name, pass, info = '') => {
@@ -381,9 +385,9 @@ rec('R. Phase 1-6 internals intact',
    'function showToast(message, duration = 3200)', "document.querySelectorAll('#screen-restaurant .interactable')",
    'const NODES = {'].every((s) => SRC.includes(s)))
 rec('R. one script in markup; at runtime only the lifted item modal follows it',
-  await evaluate(`document.querySelectorAll('script').length === 1`) &&
+  await evaluate(`document.querySelectorAll('script').length === 9`) &&
   await evaluate(`(() => { const k = [...document.body.children]
-    return k[k.length - 1].id === 'item-modal' && k[k.length - 2].tagName === 'SCRIPT' })()`))
+    return k.filter(e => e.id === 'item-modal').length === 1 && k[k.length-1].tagName === 'SCRIPT' && document.scripts[document.scripts.length-1].src.endsWith('js/init.js') })()`))
 rec('R. three screens exist, restaurant first',
   await evaluate(`[...document.querySelectorAll('.game-screen')].map(e => e.id).join(',')`) ===
   'screen-restaurant,screen-patio,screen-final')

@@ -1,13 +1,17 @@
 // Phase 3 — dialogue panel. Real mouse/keyboard events against headless Chrome.
 // Usage: node test/phase3-dialogue.test.mjs
 import { spawn } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 
 const PORT = 9334
 const ROOT = '/Users/dario.martinovski/murder-mystery'
 const FILE = `file://${ROOT}/index.html`
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const SRC = readFileSync(`${ROOT}/index.html`, 'utf8')
+// source of truth is now spread across index.html + css/ + js/
+const SRC = [`${ROOT}/index.html`,
+  ...readdirSync(`${ROOT}/css`).sort().map(f => `${ROOT}/css/${f}`),
+  ...readdirSync(`${ROOT}/js`).sort().map(f => `${ROOT}/js/${f}`),
+].map(p => readFileSync(p, 'utf8')).join('\n')
 
 const results = []
 const rec = (name, pass, info = '') => results.push({ name, pass, info: String(info) })
@@ -519,7 +523,7 @@ rec('14. no uncaught page exceptions',
       .every(i => !!document.getElementById(i)),
     sceneSize: (() => { const s = document.querySelector('.scene'); return s.offsetWidth + 'x' + s.offsetHeight })(),
     scriptCount: document.querySelectorAll('script').length,
-    scriptIsLast: (() => { const k = [...document.body.children]; return k[k.length-1].id === 'item-modal' && k[k.length-2].tagName === 'SCRIPT' })(),
+    scriptIsLast: (() => { const k = [...document.body.children]; return k.filter(e => e.id === 'item-modal').length === 1 && k[k.length-1].tagName === 'SCRIPT' && document.scripts[document.scripts.length-1].src.endsWith('js/init.js') })(),
     // the dialogue panel must come after the vignette; Phase 5 appends the
     // inventory bar and item modal after it
     panelOrder: (() => { const ids = [...document.querySelector('.scene').children].map(e => e.id)
@@ -529,7 +533,7 @@ rec('14. no uncaught page exceptions',
   rec('15. Phase 1 element counts intact', dom.tables === 6 && dom.npcs === 7 && dom.floors === 2 && dom.plants === 2, JSON.stringify(dom))
   rec('15. Phase 1+2 ids all present', dom.ids)
   rec('15. scene still exactly 960x640', dom.sceneSize === '960x640', dom.sceneSize)
-  rec('15. still one script, last child of body', dom.scriptCount === 1 && dom.scriptIsLast)
+  rec('15. nine classic scripts, init.js last', dom.scriptCount === 9 && dom.scriptIsLast)
   rec('15. scene tail is inventory then toast (item modal lifted to body in Phase 7)',
     dom.panelOrder.order === 'toast,sound-toggle', dom.panelOrder.order)
 

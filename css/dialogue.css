@@ -1,0 +1,185 @@
+/* =========================================================
+   PHASE 3 — DIALOGUE PANEL
+   Slides in over the right 340px (~36%) of the scene. The
+   restaurant stays visible on the left — no full-screen
+   backdrop, she never loses her sense of place.
+   ========================================================= */
+.dialogue {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 340px;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem 1.25rem 1.25rem;
+  background: rgba(18, 10, 4, 0.94);
+  border-left: 1px solid rgba(244, 168, 67, 0.15);
+  backdrop-filter: blur(4px);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* closed: off-scene and click-through */
+.dialogue[aria-hidden="true"] { pointer-events: none; }
+
+.dialogue.dialogue--open { transform: translateX(0); }
+
+/* ── Header ── */
+.dialogue__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(244, 168, 67, 0.12);
+}
+
+.dialogue__avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--sage); /* overridden per NPC in JS */
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.45);
+  font-family: 'Lora', serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dialogue__npc-name {
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--text-label);
+}
+
+/* ── Speech bubble ── */
+.dialogue__bubble {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.dialogue__text {
+  margin: 0;
+  font-family: 'Lora', serif;
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: rgba(244, 220, 180, 0.9);
+  /* the dialogue trees are written with deliberate line breaks */
+  white-space: pre-line;
+}
+
+/* ── Response options ── */
+.dialogue__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: opacity 0.2s ease;
+}
+
+/* Held back until the NPC has started speaking. `transition: none` makes
+   the hide instant and leaves the fade to the reveal — otherwise the
+   options visibly dip 1 -> 0 -> 1 every time a node changes. */
+.dialogue__options--pending {
+  opacity: 0;
+  pointer-events: none;
+  transition: none;
+}
+
+.dialogue__option {
+  padding: 0.6rem 0.85rem;
+  background: rgba(244, 168, 67, 0.06);
+  border: 1px solid rgba(244, 168, 67, 0.2);
+  border-radius: 4px;
+  color: rgba(244, 220, 180, 0.85);
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.dialogue__option:hover {
+  background: rgba(244, 168, 67, 0.14);
+  border-color: rgba(244, 168, 67, 0.45);
+  color: rgba(244, 220, 180, 1);
+}
+
+/* ── Close button ── */
+.dialogue__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.85rem;
+  padding: 0.25rem;
+  background: none;
+  border: none;
+  color: rgba(244, 220, 180, 0.3);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.dialogue__close:hover { color: rgba(244, 220, 180, 0.75); }
+
+/* ── Scrollbar for the bubble ── */
+.dialogue__bubble::-webkit-scrollbar { width: 3px; }
+.dialogue__bubble::-webkit-scrollbar-track { background: transparent; }
+.dialogue__bubble::-webkit-scrollbar-thumb {
+  background: rgba(244, 168, 67, 0.2);
+  border-radius: 2px;
+}
+
+/* =========================================================
+   PHASE 4 — STATE-DRIVEN VISUAL CUES
+   ========================================================= */
+
+/* The exit door becomes a usable route once G.patioUnlocked is set.
+   Phase 7 gives it real interactivity. */
+.door--active {
+  /* Phase 1's own shadows are repeated here: same specificity as .door,
+     so a bare box-shadow would have dropped the frame shading. */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.65),
+    inset 0 0 10px rgba(0, 0, 0, 0.45),
+    0 0 12px rgba(244, 168, 67, 0.4);
+  cursor: pointer;
+}
+
+/* A real element, not .door--active::after — .door already spends ::after
+   on its handle and ::before on the light spill, so a pseudo-element here
+   would have overwritten the handle. */
+.door__patio-cue { display: none; }
+
+.door--active .door__patio-cue {
+  display: block;
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Lora', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  color: rgba(244, 168, 67, 0.7);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Applied by Phase 6 to the Table B guest once the SOS is decoded and the
+   binary note is still unread. */
+.npc--hint-pulse {
+  animation: hintPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(244, 168, 67, 0.2); }
+  50%      { box-shadow: 0 0 14px rgba(244, 168, 67, 0.6); }
+}
+

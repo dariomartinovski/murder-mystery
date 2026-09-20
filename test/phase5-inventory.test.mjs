@@ -1,13 +1,17 @@
 // Phase 5 — inventory + item modal. Real clicks against headless Chrome.
 // Usage: node test/phase5-inventory.test.mjs
 import { spawn } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 
 const PORT = 9336
 const ROOT = '/Users/dario.martinovski/murder-mystery'
 const FILE = `file://${ROOT}/index.html`
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const SRC = readFileSync(`${ROOT}/index.html`, 'utf8')
+// source of truth is now spread across index.html + css/ + js/
+const SRC = [`${ROOT}/index.html`,
+  ...readdirSync(`${ROOT}/css`).sort().map(f => `${ROOT}/css/${f}`),
+  ...readdirSync(`${ROOT}/js`).sort().map(f => `${ROOT}/js/${f}`),
+].map(p => readFileSync(p, 'utf8')).join('\n')
 
 const results = []
 const rec = (name, pass, info = '') => {
@@ -454,8 +458,8 @@ await clearInv()
      'const NODES = {', 'function revealPatioDoor()', 'dialogue__options--pending',
      'if (dialogueState.open) return'].every((t) => SRC.includes(t)))
   rec('17. still one script, last child of body',
-    await evaluate(`document.querySelectorAll('script').length === 1 &&
-      (() => { const k = [...document.body.children]; return k[k.length-1].id === 'item-modal' && k[k.length-2].tagName === 'SCRIPT' })()`))
+    await evaluate(`document.querySelectorAll('script').length === 9 &&
+      (() => { const k = [...document.body.children]; return k.filter(e => e.id === 'item-modal').length === 1 && k[k.length-1].tagName === 'SCRIPT' && document.scripts[document.scripts.length-1].src.endsWith('js/init.js') })()`))
   rec('17. scene still exactly 960x640',
     await evaluate(`(() => { const s = document.querySelector('.scene'); return s.offsetWidth === 960 && s.offsetHeight === 640 })()`))
   rec('17. scene tail is inventory then toast (item modal lifted to body in Phase 7)',
