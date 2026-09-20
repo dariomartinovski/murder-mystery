@@ -1,0 +1,62 @@
+PASS  2. empty submit gives the lookup nudge
+PASS  2. wrong submit gives the atomic-number nudge
+PASS  2. wrong submits leave the puzzle unsolved and enabled
+PASS  2. no pulse and no toast from a wrong answer
+PASS  1. "sos" (lowercase) solves it
+PASS  1. input and button disabled once solved
+PASS  1. G.decodedSOS set
+PASS  7. solving closes the item modal
+PASS  7. sos-beat narration plays
+PASS  7. no pulse while the narration is up
+PASS  7. Table B pulses only after dismissal
+PASS  3. reopening shows the solved state immediately
+PASS  3. reopened inputs are disabled
+PASS  3. a disabled submit cannot re-fire the consequence
+PASS  10. toast fades out after its duration
+PASS  10. a superseded toast cannot dismiss the newer one early
+PASS  10. the newer toast then expires on its own
+PASS  5. wrong binary gives the right-to-left nudge
+PASS  5. wrong binary leaves it unsolved
+PASS  4. "23" solves the binary puzzle
+PASS  4. G.solvedBinary set
+PASS  4. Table B pulse removed, Table D and the bartender pulsed
+PASS  4. toast names the jacket
+PASS  10. toast sits top-centre above everything
+FAIL  10. toast faded in (opacity 1)  :: 0
+PASS  6. reopening the binary note shows the solved state
+PASS  7. after decodedSOS, Table B opens on b_unlocked
+PASS  8. after solvedBinary, Table D opens on d_unlocked
+FAIL  8. confirming sets G.tableDConfirmed  :: 
+PASS  9. pulses still present just before the waiter hint
+FAIL  9. all gates met -> w_hint  :: w_intro
+FAIL  9. w_hint onEnter removes every pulse  :: ["bartender","npc-d"]
+FAIL  13. exit door gains .door--active  :: {"active":false,"shadow":"rgba(0, 0, 0, 0.65) 0px 4px 12px 0px, rgba(0, 0, 0, 0.45) 0px 0px 10px 0px inset","cue":"none"}
+FAIL  13. door carries the amber glow  :: rgba(0, 0, 0, 0.65) 0px 4px 12px 0px, rgba(0, 0, 0, 0.45) 0px 0px 10px 0px inset
+FAIL  13. PATIO cue visible  :: none
+PASS  11. only the Phase 7 phone adds the receipt
+PASS  11. receipt opens manually without error
+PASS  11. "RAM" (case-insensitive) solves the receipt puzzle
+PASS  11. G.crackedNoteApp set and Phase 7 log emitted
+PASS  11. toast announces the unlock
+PASS  12. reopening the receipt shows the solved state
+PASS  11. wrong receipt answer nudges about the loop bound
+PASS  14. the three Phase 5 placeholder logs are gone
+PASS  14. the three consequence functions exist
+PASS  14. w_hint onEnter replaced (cleanup + reveal, single revealPatioDoor call)
+PASS  14. Phase 1-5 internals intact
+PASS  14. still one script, last child of body
+PASS  14. scene still exactly 960x640
+FAIL  14. toast is the last child of the scene  :: 
+PASS  ERR. no uncaught exceptions or console errors
+
+42/50 passed
+
+Failures:
+  - 10. toast faded in (opacity 1) :: 0
+  - 8. confirming sets G.tableDConfirmed :: 
+  - 9. all gates met -> w_hint :: w_intro
+  - 9. w_hint onEnter removes every pulse :: ["bartender","npc-d"]
+  - 13. exit door gains .door--active :: {"active":false,"shadow":"rgba(0, 0, 0, 0.65) 0px 4px 12px 0px, rgba(0, 0, 0, 0.45) 0px 0px 10px 0px inset","cue":"none"}
+  - 13. door carries the amber glow :: rgba(0, 0, 0, 0.65) 0px 4px 12px 0px, rgba(0, 0, 0, 0.45) 0px 0px 10px 0px inset
+  - 13. PATIO cue visible :: none
+  - 14. toast is the last child of the scene :: 

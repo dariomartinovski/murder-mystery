@@ -1,0 +1,9 @@
+
+=== --disable-gpu (what the test suites use) ===
+  panel OPEN, backdrop-filter blur(4px): typed 436 chars: ideal 9592ms | actual 9602ms (1.0x) | 577 frames
+  panel OPEN, backdrop-filter none     : typed 436 chars: ideal 9592ms | actual 9595ms (1.0x) | 575 frames
+  panel CLOSED (clipped, no paint)     : 9595ms
+
+=== GPU enabled ===
+  panel OPEN, backdrop-filter blur(4px): typed 436 chars: ideal 9592ms | actual 9604ms (1.0x) | 577 frames
+  panel OPEN, backdrop-filter none     : typed 436 chars: ideal 9592ms | actual 9595ms (1.0x) | 576 frames

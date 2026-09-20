@@ -1,0 +1,28 @@
+PASS  1. player element exists with avatar + shadow
+PASS  1. starts beside Our Table (178,354)
+PASS  1. left/top are centre-offset by 14px
+PASS  1. no slide-in animation on load
+PASS  2. scene cursor is crosshair
+PASS  2. interactable cursor is pointer
+PASS  3. floor click moves her there (centre coords)
+PASS  3. full-scene #bar wrapper did NOT hijack the click
+PASS  3. vignette overlay does not block clicks
+PASS  3. player--moving applied during walk
+PASS  3. player--moving cleared on arrival
+PASS  4. short step clamps to 200ms minimum
+PASS  4. mid walk is proportional (~1.8ms/px)
+PASS  4. long walk clamps to 900ms maximum
+PASS  4. near < mid < far
+PASS  5. ignored: Our Table is solid
+PASS  5. ignored: unclickable table is solid
+PASS  5. ignored: bartender standing behind the bar
+PASS  5. ignored: behind the bar is solid
+PASS  5. ignored: outside left wall
+PASS  5. ignored: outside top wall
+PASS  5. ignored: outside bottom wall
+PASS  5. solid-but-interactable table-a walks to approach, is not ignored
+PASS  5. solid-but-interactable bar walks to approach, is not ignored
+PASS  5. click outside the scene does nothing
+PASS  6. table-a: real click reaches approach (572,238)
+PASS  6. table-a: approach point is walkable
+PASS  6. table-a: stops off to the side, not on top

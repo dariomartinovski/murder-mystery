@@ -1,0 +1,130 @@
+
+PASS  13. no dangling / malformed node references
+PASS  13. no orphaned unreachable nodes
+PASS  13. entryNode resolves under every flag combination
+PASS  13. six NPCs, full trees present
+PASS  13. door-exit still has no NPCS entry
+PASS  1. toilet first visit opens wc_intro
+PASS  1. wc_intro onEnter sets G.visitedToilet
+PASS  1. first visit describes the scene
+PASS  1. first visit offers exactly one way in
+PASS  1. going inside advances to wc_inside
+PASS  1. inside is empty + cigarette smoke near the window
+PASS  1. second visit opens wc_revisit
+PASS  1. revisit text is shorter than the first
+PASS  2. table-a opens on a_intro
+PASS  2. note not found before the conversation
+PASS  2. asking about her friend advances to a_seen
+PASS  2. a_seen onEnter sets G.foundNote
+PASS  2. a_seen onEnter adds the note to the inventory
+PASS  2. he hands over a folded note found near the toilet
+PASS  2. asking what it says advances to a_note
+PASS  2. a_note describes numbers on one side and a grid on the other
+PASS  2. a_note closes the panel
+PASS  2. declining closes without giving the note
+PASS  3. table-b first visit opens b_intro
+PASS  3. asking him lands on the b_nothing dead end
+PASS  3. dead end reads as a dead end
+PASS  3. dead end offers only a way out
+PASS  3. dead end closes the panel
+PASS  3. no binary note given before the SOS is decoded
+PASS  4. after decodedSOS, entry node is b_unlocked
+PASS  4. b_unlocked onEnter adds the binary note to the inventory
+PASS  4. he describes the dark-jacket man and writes it in binary
+PASS  4. asking for help decoding advances to b_hint
+PASS  4. b_hint teaches binary->decimal and names 23
+PASS  5. after solvedBinary, entry node is b_done
+PASS  5. b_done is a short closing beat
+PASS  5. b_done offers two exits, both closing
+PASS  6. table-c first visit opens c_intro
+PASS  6. c_intro offers three options
+PASS  6. asking about the night advances to c_nothing
+PASS  6. c_nothing onEnter sets G.tableCVisited
+PASS  6. offering IT help advances to c_it
+PASS  6. c_it explains the time-based PIN
+PASS  6. c_it names Pacific/Auckland vs Macedonian time
+PASS  6. offering to look advances to c_thanks
+PASS  6. c_thanks describes the phone
+PASS  6. "Are you alright?" routes to c_phone
+PASS  6. c_phone also sets G.tableCVisited
+PASS  6. c_phone also reaches c_it
+PASS  14. c_revisit with {"foundPhone":false,"crackedChatApp":false} opens c_revisit
+PASS  14. c_revisit shows exactly the right option
+PASS  14. that option goes to c_revisit_no
+PASS  14. c_revisit with {"foundPhone":true,"crackedChatApp":false} opens c_revisit
+PASS  14. c_revisit shows exactly the right option
+PASS  14. that option goes to c_revisit_found
+PASS  14. c_revisit with {"foundPhone":true,"crackedChatApp":true} opens c_revisit
+PASS  14. c_revisit shows exactly the right option
+PASS  14. that option goes to close
+PASS  6. c_revisit_no repeats where the phone was left
+PASS  7. table-d first visit opens d_intro
+PASS  7. d_intro reads as a man just back from outside
+PASS  7. asking about the toilet advances to d_nothing
+PASS  7. d_nothing mentions a man in a dark jacket in a hurry
+PASS  7. pressing for detail advances to d_detail
+PASS  7. d_detail produces the number twenty-three
+PASS  7. both d_detail options lead to d_confirm
+PASS  7. d_confirm onEnter sets G.tableDConfirmed
+PASS  7. reaches d_confirm
+PASS  8. solvedBinary + unconfirmed opens d_unlocked
+PASS  8. d_unlocked -> d_reconfirm
+PASS  8. d_reconfirm repeats 23 and points at the back door
+PASS  8. d_reconfirm also sets G.tableDConfirmed
+PASS  8. tableDConfirmed opens d_done
+PASS  8. d_done takes precedence over d_unlocked
+PASS  9. waiter first visit opens w_intro
+PASS  9. w_intro onEnter sets G.waiterFirstVisit
+PASS  9. w_intro offers three options
+PASS  9. patio still locked on first visit
+PASS  9. cameras option advances to w_cameras
+PASS  9. cameras are broken — a real dead end
+PASS  9. w_cameras offers only a way out
+PASS  9. camera dead end closes the panel
+PASS  9. missing-friend option advances to w_missing
+PASS  9. w_missing keeps two ways forward
+PASS  10. all gates met -> entry node is w_hint
+PASS  10. w_hint onEnter sets waiterHintGiven + patioUnlocked
+PASS  10. w_hint onEnter clears every hint pulse
+PASS  10. PATIO placeholder log is gone from source
+PASS  10. w_hint connects 23 to a patio table number
+PASS  10. w_hint names tables six, seven, eight
+PASS  10. w_hint places the dark-jacket man smoking out there
+PASS  10. w_hint offers the single patio option
+PASS  10. exit door gains .door--active
+PASS  10. exit door gains the amber glow
+PASS  10. exit door keeps its Phase 1 frame shading
+PASS  10. PATIO cue is visible below the door
+PASS  10. door handle survived the cue (not a ::after collision)
+PASS  10. exit door is still not clickable as an NPC
+PASS  10. patio option advances to w_patio
+PASS  10. w_patio tells her where the door is
+PASS  11. after the hint, entry node is w_done
+PASS  11. w_done is a short acknowledgment
+PASS  11. w_done offers a single exit
+PASS  11. incomplete gates {"solvedBinary":true,"tableDConfirmed":true} stay on w_intro
+PASS  11. incomplete gates {"solvedBinary":true,"tableDConfirmed":true} leave the patio locked
+PASS  11. incomplete gates {"solvedBinary":true,"tableCVisited":true} stay on w_intro
+PASS  11. incomplete gates {"solvedBinary":true,"tableCVisited":true} leave the patio locked
+PASS  11. incomplete gates {"tableDConfirmed":true,"tableCVisited":true} stay on w_intro
+PASS  11. incomplete gates {"tableDConfirmed":true,"tableCVisited":true} leave the patio locked
+PASS  11. a dead-end first visit never reveals the patio cue
+PASS  PATH. clicking through the story reaches the patio unlock
+PASS  PATH. the run produced no missing-node or condition warnings
+PASS  12. Phase 1 palette + layout intact
+PASS  12. Phase 2 movement internals intact
+PASS  12. Phase 3 panel mechanics intact
+PASS  12. replacement 1 — placeholder NPCS fully removed
+PASS  12. replacement 2 — Phase 3 handleOption body fully removed
+PASS  12. renderNode added and used by both entry points
+PASS  12. renderNode uses the tracked optionsTimer, not a bare setTimeout
+PASS  12. still one script, last child of body
+PASS  12. scene still exactly 960x640, all ids present
+FAIL  12. G holds exactly the specified flags  :: 
+PASS  ERR. no uncaught exceptions or console errors
+PASS  ERR. only the expected door-exit warning was emitted
+
+123/124 passed
+
+Failures:
+  - 12. G holds exactly the specified flags :: 
