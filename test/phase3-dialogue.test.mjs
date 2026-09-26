@@ -112,6 +112,12 @@ const clickClient = async (cx, cy) => {
 }
 
 // scene-local (centre coords) -> viewport coords
+const centreOf = (sel) => evaluate(`(() => {
+  const el = document.querySelector(${JSON.stringify(sel)})
+  if (!el) return null
+  const r = el.getBoundingClientRect()
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+})()`)
 const clickScene = async (x, y) => {
   const { cx, cy } = await evaluate(`(() => { const s = document.querySelector('.scene'); const r = s.getBoundingClientRect()
     return { cx: r.left + s.clientLeft + ${x}, cy: r.top + s.clientTop + ${y} } })()`)
@@ -188,12 +194,12 @@ const HIT = {
   'table-d': [620, 404], 'bar': [826, 450], 'door-wc': [82, 26], 'door-exit': [856, 26],
 }
 const EXPECT = {
-  'table-a': ['Gentleman at Table A', 'A', 'rgb(107, 123, 94)'],
-  'table-b': ['Man at Table B', 'B', 'rgb(94, 107, 123)'],
-  'table-c': ['Man at Table C', 'C', 'rgb(123, 94, 107)'],
-  'table-d': ['Man at Table D', 'D', 'rgb(123, 107, 94)'],
-  'bar': ['Marko — Waiter', 'M', 'rgb(139, 105, 20)'],
-  'door-wc': ['Toilet', '🚪', 'rgb(58, 58, 58)'],
+  'table-a': ['Goran', 'A', 'rgb(107, 123, 94)', 'assets/images/TableA-Goran.png'],
+  'table-b': ['Darko', 'B', 'rgb(94, 107, 123)', 'assets/images/TableB-Darko.png'],
+  'table-c': ['Simon', 'C', 'rgb(123, 94, 107)', 'assets/images/TableC-Simon.png'],
+  'table-d': ['Angel', 'D', 'rgb(123, 107, 94)', 'assets/images/TableD-Angel.png'],
+  'bar': ['Marko', 'M', 'rgb(139, 105, 20)', 'assets/images/Waiter.png'],
+  'door-wc': ['Toilet', '🚪', 'rgb(58, 58, 58)', null],
 }
 
 // ══════════════════════════════════════════
@@ -230,10 +236,25 @@ for (const id of Object.keys(EXPECT)) {
   rec(`1. ${id}: arrives at approach then opens panel`,
     pos.x === ax && pos.y === ay && p.open === true && p.hasOpenClass && p.ariaHidden === 'false',
     `pos=(${pos.x},${pos.y}) want (${ax},${ay}) open=${p.open}`)
-  const [name, initial, color] = EXPECT[id]
-  rec(`3. ${id}: name / initial / avatar colour correct`,
-    p.name === name && p.avatarText === initial && p.avatarBg === color,
-    `${p.name} | ${p.avatarText} | ${p.avatarBg}`)
+  const [name, initial, color, portrait] = EXPECT[id]
+  const head = await evaluate(`(() => { const a = document.getElementById('dialogue-avatar')
+    const img = document.getElementById('dialogue-portrait')
+    return { photo: a.classList.contains('dialogue__avatar--photo'),
+             src: img.getAttribute('src') || '',
+             text: document.getElementById('dialogue-initial').textContent,
+             initialHidden: getComputedStyle(document.getElementById('dialogue-initial')).display === 'none',
+             portraitShown: getComputedStyle(img).display !== 'none' } })()`)
+  if (portrait) {
+    rec(`3. ${id}: renamed and portrait shown in the header`,
+      p.name === name && head.photo === true && head.src.endsWith(portrait) &&
+      head.portraitShown === true && head.initialHidden === true,
+      `${p.name} | ${head.src} | photo=${head.photo} | shown=${head.portraitShown} | initialHidden=${head.initialHidden}`)
+  } else {
+    rec(`3. ${id}: no portrait falls back to the initial`,
+      p.name === name && head.photo === false && head.text === initial && head.initialHidden === false,
+      `${p.name} | '${head.text}' | initialHidden=${head.initialHidden}`)
+  }
+  rec(`3. ${id}: avatar colour correct`, p.avatarBg === color, p.avatarBg)
   rec(`3. ${id}: state tracks the npc`, p.npc === id, p.npc)
   rec(`3. ${id}: opens on its state-aware entry node`, p.nodeId === want.nodeId,
     `${p.nodeId} want ${want.nodeId}`)
@@ -470,7 +491,7 @@ await evaluate(`openDialogue('bar')`);     await sleep(300)
   const done = await panel()
   rec('13. switched text is not contaminated by the previous NPC',
     done.text === wantBar.npcText, `got ${done.text.length} chars, want ${wantBar.npcText.length}`)
-  rec('13. header follows the newest NPC', done.name === 'Marko — Waiter', done.name)
+  rec('13. header follows the newest NPC', done.name === 'Marko', done.name)
   rec('13. only one typewriter ran (no char doubling)',
     !done.text.includes(wantB.npcText.slice(0, 12)), done.text.slice(0, 60))
 }
@@ -508,6 +529,53 @@ rec('13. timers quiesce after rapid open/close cycling',
 rec('14. no uncaught page exceptions',
   consoleLogs.filter((l) => l.startsWith('[PAGE EXCEPTION]')).length === 0,
   JSON.stringify(consoleLogs.filter((l) => l.startsWith('[PAGE EXCEPTION]'))))
+
+// ══════════════════════════════════════════
+// 16. portrait lightbox — click to expand, click or Escape to close
+// ══════════════════════════════════════════
+await evaluate(`closeDialogue()`); await sleep(400)
+await resetG()
+await clickScene(...HIT['table-a']); await sleep(1400)
+rec('16. dialogue open with Goran before expanding',
+  await evaluate(`dialogueState.open`) === true &&
+  await evaluate(`document.getElementById('dialogue-npc-name').textContent`) === 'Goran')
+
+const avatarC = await centreOf('#dialogue-avatar')
+await clickClient(avatarC.x, avatarC.y); await sleep(400)
+rec('16. clicking the portrait opens the lightbox',
+  await evaluate(`document.getElementById('portrait-lightbox').classList.contains('portrait-lightbox--open')`) === true)
+rec('16. lightbox shows the right image and caption',
+  await evaluate(`document.getElementById('portrait-lightbox-img').getAttribute('src').endsWith('assets/images/TableA-Goran.png')`) &&
+  await evaluate(`document.getElementById('portrait-lightbox-name').textContent`) === 'Goran')
+rec('16. lightbox paints above the dialogue panel',
+  Number(await evaluate(`getComputedStyle(document.getElementById('portrait-lightbox')).zIndex`)) >
+  Number(await evaluate(`getComputedStyle(document.getElementById('dialogue')).zIndex`)))
+rec('16. opening the lightbox does not close the dialogue',
+  await evaluate(`dialogueState.open`) === true)
+
+// any click inside closes it
+const lbC = await centreOf('#portrait-lightbox-backdrop')
+await clickClient(lbC.x, lbC.y); await sleep(400)
+rec('16. clicking the backdrop closes the lightbox',
+  await evaluate(`document.getElementById('portrait-lightbox').classList.contains('portrait-lightbox--open')`) === false)
+rec('16. dialogue still open underneath', await evaluate(`dialogueState.open`) === true)
+
+// Escape peels the lightbox only
+await clickClient(avatarC.x, avatarC.y); await sleep(400)
+await evaluate(`document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))`)
+await sleep(300)
+rec('16. Escape closes the lightbox but not the dialogue',
+  await evaluate(`document.getElementById('portrait-lightbox').classList.contains('portrait-lightbox--open')`) === false &&
+  await evaluate(`dialogueState.open`) === true)
+// and a second Escape then closes the dialogue as usual
+await evaluate(`document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))`)
+await sleep(400)
+rec('16. a second Escape closes the dialogue', await evaluate(`dialogueState.open`) === false)
+
+// portraits are fetched lazily, not eagerly on load
+rec('16. only talked-to portraits are requested',
+  await evaluate(`performance.getEntriesByType('resource').filter(r => r.name.includes('assets/images/')).length`) <= 2,
+  JSON.stringify(await evaluate(`performance.getEntriesByType('resource').filter(r => r.name.includes('assets/images/')).map(r => r.name.split('/').pop())`)))
 
 // ══════════════════════════════════════════
 // 15. Phase 1 + 2 untouched (source-level and DOM-level)

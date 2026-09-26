@@ -183,3 +183,94 @@
   50%      { box-shadow: 0 0 14px rgba(244, 168, 67, 0.6); }
 }
 
+
+/* =========================================================
+   PORTRAITS — Phase 10 (character art in the dialogue header)
+   ========================================================= */
+.dialogue__avatar {
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.dialogue__initial {
+  font-family: 'Lora', serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dialogue__avatar--photo .dialogue__initial {
+  display: none;
+}
+
+.dialogue__portrait {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  border-radius: 50%;
+}
+
+.dialogue__avatar--photo .dialogue__portrait {
+  display: block;
+}
+
+/* subtle ring so the portrait reads as clickable */
+.dialogue__avatar--photo:hover {
+  box-shadow: 0 0 0 1px rgba(244, 168, 67, 0.45);
+}
+
+/* =========================================================
+   PORTRAIT LIGHTBOX — expanded view
+   ========================================================= */
+.portrait-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.portrait-lightbox.portrait-lightbox--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.portrait-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  cursor: pointer;
+}
+
+.portrait-lightbox__frame {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: min(420px, 80vw);
+}
+
+.portrait-lightbox__frame img {
+  max-height: 72vh;
+  width: auto;
+  border: 1px solid rgba(244, 168, 67, 0.25);
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  background: #0D0D0F;
+}
+
+.portrait-lightbox__frame figcaption {
+  font-family: 'Lora', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(244, 220, 180, 0.6);
+}

@@ -226,7 +226,7 @@ rec('6. final-screen location placeholder present',
   SRC.includes('Tomorrow &nbsp;·&nbsp; 16:00 &nbsp;·&nbsp; _______________') &&
   await evaluate(`document.querySelector('.final-card__detail').textContent`).then((t) => t.includes('_______________')))
 rec('6. intro personalisation anchors present',
-  SRC.includes("It's a Thursday in late autumn.") &&
+  SRC.includes("It's a Wednesday on the last day of Spring.") &&
   SRC.includes("You're coming back from lectures.") &&
   SRC.includes("You and your friend are waiting at the bus stop."))
 rec('6. chat dessert line present for personalising',

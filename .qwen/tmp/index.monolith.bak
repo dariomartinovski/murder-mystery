@@ -4657,7 +4657,7 @@ He hesitates, then adds quietly:
         lines: [
           { text: "Let's go back.", italic: true },
           { text: '', empty: true },
-          { text: "It's a Thursday in late autumn." },
+          { text: "It's a Wednesday on the last day of Spring." },
           { text: "The kind of evening where the sky never really got light to begin with." },
           { text: '', empty: true },
           { text: "You're coming back from lectures." },

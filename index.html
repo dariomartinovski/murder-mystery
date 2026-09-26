@@ -201,7 +201,10 @@
 
       <!-- NPC Header -->
       <div class="dialogue__header">
-        <div class="dialogue__avatar" id="dialogue-avatar"></div>
+        <div class="dialogue__avatar" id="dialogue-avatar" title="Click to look closer">
+          <span class="dialogue__initial" id="dialogue-initial"></span>
+          <img class="dialogue__portrait" id="dialogue-portrait" alt="" decoding="async">
+        </div>
         <div class="dialogue__npc-name" id="dialogue-npc-name"></div>
       </div>
 
@@ -363,6 +366,15 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- PORTRAIT LIGHTBOX — click a portrait in the dialogue header to expand -->
+  <div class="portrait-lightbox" id="portrait-lightbox" aria-hidden="true">
+    <div class="portrait-lightbox__backdrop" id="portrait-lightbox-backdrop"></div>
+    <figure class="portrait-lightbox__frame">
+      <img id="portrait-lightbox-img" alt="" decoding="async">
+      <figcaption id="portrait-lightbox-name"></figcaption>
+    </figure>
   </div>
 
   <!-- CUSTOM CURSOR — Phase 9 -->

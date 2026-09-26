@@ -44,13 +44,15 @@ const G = {
 // ─────────────────────────────────────────
 const NPCS = {
   'table-a': {
-    name:      'Gentleman at Table A',
+    name:      'Goran',
+    portrait:  'assets/images/TableA-Goran.png',
     initial:   'A',
     color:     '#6B7B5E',
     entryNode: (G) => 'a_intro'
   },
   'table-b': {
-    name:      'Man at Table B',
+    name:      'Darko',
+    portrait:  'assets/images/TableB-Darko.png',
     initial:   'B',
     color:     '#5E6B7B',
     entryNode: (G) => {
@@ -60,7 +62,8 @@ const NPCS = {
     }
   },
   'table-c': {
-    name:      'Man at Table C',
+    name:      'Simon',
+    portrait:  'assets/images/TableC-Simon.png',
     initial:   'C',
     color:     '#7B5E6B',
     entryNode: (G) => {
@@ -69,7 +72,8 @@ const NPCS = {
     }
   },
   'table-d': {
-    name:      'Man at Table D',
+    name:      'Angel',
+    portrait:  'assets/images/TableD-Angel.png',
     initial:   'D',
     color:     '#7B6B5E',
     entryNode: (G) => {
@@ -79,7 +83,8 @@ const NPCS = {
     }
   },
   'bar': {
-    name:      'Marko — Waiter',
+    name:      'Marko',
+    portrait:  'assets/images/Waiter.png',
     initial:   'M',
     color:     '#8B6914',
     entryNode: (G) => {
@@ -673,7 +678,7 @@ const NARRATIVES = {
     lines: [
       { text: "Let's go back.", italic: true },
       { text: '', empty: true },
-      { text: "It's a Thursday in late autumn." },
+      { text: "It's a Wednesday on the last day of Spring." },
       { text: "The kind of evening where the sky never really got light to begin with." },
       { text: '', empty: true },
       { text: "You're coming back from lectures." },
@@ -681,7 +686,7 @@ const NARRATIVES = {
       { text: "You and your friend are waiting at the bus stop." },
       { text: "Cars rush past. People rush past. Everyone going somewhere." },
       { text: '', empty: true },
-      { text: "And then —", italic: true },
+      { text: "And then ...", italic: true },
       { text: '', empty: true },
       { text: "SPLASH.", highlight: true },
       { text: '', empty: true },
@@ -708,6 +713,24 @@ const NARRATIVES = {
       { text: "You nod. You take a sip of wine." },
       { text: '', empty: true },
       { text: "You wait.", italic: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },  
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true },
+      { text: '', empty: true }
     ]
   },
 

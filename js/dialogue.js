@@ -11,10 +11,17 @@ const dialogueState = {
 // ─────────────────────────────────────────
 const dialoguePanel   = document.getElementById('dialogue')
 const dialogueAvatar  = document.getElementById('dialogue-avatar')
+const dialoguePortrait = document.getElementById('dialogue-portrait')
+const dialogueInitial  = document.getElementById('dialogue-initial')
 const dialogueNpcName = document.getElementById('dialogue-npc-name')
 const dialogueText    = document.getElementById('dialogue-text')
 const dialogueOptions = document.getElementById('dialogue-options')
 const dialogueClose   = document.getElementById('dialogue-close')
+
+const portraitLightbox     = document.getElementById('portrait-lightbox')
+const portraitLightboxImg  = document.getElementById('portrait-lightbox-img')
+const portraitLightboxName = document.getElementById('portrait-lightbox-name')
+let portraitLightboxOpen   = false
 
 // Both timers are owned here so that closing mid-typewriter, or walking
 // straight from one NPC to another, cannot leave a stale timer writing
@@ -130,9 +137,21 @@ function openDialogue(npcId) {
 
   stopDialogueTimers()
 
-  // Set NPC display
-  dialogueAvatar.textContent      = npc.initial
+  // Set NPC display — portrait if we have one, initial as fallback.
+  // src is assigned here (not in markup) so the ~2MB portraits are fetched
+  // only when that character is actually talked to, then cached.
   dialogueAvatar.style.background = npc.color
+  dialogueInitial.textContent = npc.initial
+  if (npc.portrait) {
+    // if the file is missing, fall back to the initial instead of a broken icon
+    dialoguePortrait.onerror = () => dialogueAvatar.classList.remove('dialogue__avatar--photo')
+    dialoguePortrait.src = npc.portrait
+    dialoguePortrait.alt = npc.name
+    dialogueAvatar.classList.add('dialogue__avatar--photo')
+  } else {
+    dialoguePortrait.removeAttribute('src')
+    dialogueAvatar.classList.remove('dialogue__avatar--photo')
+  }
   dialogueNpcName.textContent     = npc.name
 
   // Update state
@@ -221,3 +240,39 @@ function revealPatioDoor() {
 }
 
 // ─────────────────────────────────────────
+
+// ─────────────────────────────────────────
+// PORTRAIT LIGHTBOX — click the header portrait to expand it
+// ─────────────────────────────────────────
+function openPortraitLightbox() {
+  const npc = NPCS[dialogueState.currentNpcId]
+  if (!npc || !npc.portrait) return
+
+  portraitLightboxImg.src = npc.portrait
+  portraitLightboxImg.alt = npc.name
+  portraitLightboxName.textContent = npc.name
+
+  portraitLightboxOpen = true
+  portraitLightbox.classList.add('portrait-lightbox--open')
+  portraitLightbox.setAttribute('aria-hidden', 'false')
+}
+
+function closePortraitLightbox() {
+  portraitLightboxOpen = false
+  portraitLightbox.classList.remove('portrait-lightbox--open')
+  portraitLightbox.setAttribute('aria-hidden', 'true')
+}
+
+dialogueAvatar.addEventListener('click', openPortraitLightbox)
+
+// Any click inside the lightbox — backdrop or frame — closes it
+portraitLightbox.addEventListener('click', () => closePortraitLightbox())
+
+// Capture phase + stopPropagation: Escape peels the lightbox off first and
+// must not also close the dialogue or item modal underneath it.
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && portraitLightboxOpen) {
+    e.stopPropagation()
+    closePortraitLightbox()
+  }
+}, true)
