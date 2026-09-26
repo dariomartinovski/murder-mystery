@@ -107,6 +107,6 @@ let out = [
 ].join('\n')
 
 out = out.replace('<title>Phase 1 — Static Restaurant Scene</title>',
-  '<title>Amigos — a murder mystery in nine courses</title>')
+  '<title>Amigos - a murder mystery in nine courses</title>')
 writeFileSync(`${ROOT}/index.html`, out)
 console.log('rewrote index.html:', out.split('\n').length, 'lines')

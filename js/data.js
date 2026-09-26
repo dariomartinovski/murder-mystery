@@ -688,6 +688,7 @@ const NARRATIVES = {
       { text: '', empty: true },
       { text: "And then ...", italic: true },
       { text: '', empty: true },
+      { text: '', empty: true },
       { text: "SPLASH.", highlight: true },
       { text: '', empty: true },
       { text: "A car. A puddle. Your jacket." },

@@ -352,6 +352,45 @@ const down = await readState()
 rec('9. half-wall does not trap her in one half',
   up.py === 200 && down.py === 520, `upper=${up.py} lower=${down.py}`)
 
+// ── 12. the seated circles show the character portraits ──
+{
+  const want = {
+    'npc-a': 'TableA-Goran.png', 'npc-b': 'TableB-Darko.png', 'npc-c': 'TableC-Simon.png',
+    'npc-d': 'TableD-Angel.png', 'bartender': 'Waiter.png',
+  }
+  for (const [id, file] of Object.entries(want)) {
+    let loaded = false
+    for (let i = 0; i < 40 && !loaded; i++) {          // ~2MB portraits decode slowly
+      loaded = await evaluate(`(() => { const im = document.querySelector('#${id} .npc__portrait')
+        return im.complete && im.naturalWidth > 0 })()`)
+      if (!loaded) await sleep(250)
+    }
+    const st = await evaluate(`(() => { const im = document.querySelector('#${id} .npc__portrait')
+      const ini = document.querySelector('#${id} .npc__initial')
+      return { src: im.getAttribute('src') || '', shown: getComputedStyle(im).display !== 'none',
+        letterHidden: getComputedStyle(ini).display === 'none' } })()`)
+    rec(`12. ${id} shows its portrait with the letter hidden`,
+      loaded && st.src.endsWith(file) && st.shown && st.letterHidden, JSON.stringify(st))
+  }
+  rec('12. anonymous patrons stay letterless grey circles',
+    await evaluate(`document.querySelectorAll('.npc--patron .npc__portrait').length`) === 0)
+  rec('12. portraits are cropped to the circle',
+    await evaluate(`getComputedStyle(document.querySelector('#npc-a .npc__portrait')).objectFit`) === 'cover')
+  rec('12. all five circles received their src once the intro was dismissed',
+    await evaluate(`document.querySelectorAll('.npc__portrait[src]').length`) === 5)
+
+  // a missing file must fall back to the letter, not a broken icon
+  await evaluate(`(() => { const im = document.querySelector('#npc-a .npc__portrait')
+    im.onerror = () => im.removeAttribute('src'); im.src = 'assets/images/nope.png' })()`)
+  await sleep(700)
+  rec('12. a missing portrait falls back to the letter',
+    await evaluate(`getComputedStyle(document.querySelector('#npc-a .npc__initial')).display`) !== 'none')
+  await evaluate(`(() => { const im = document.querySelector('#npc-a .npc__portrait'); im.src = im.dataset.portrait })()`)
+  await sleep(700)
+  rec('12. restoring the src brings the portrait back',
+    await evaluate(`getComputedStyle(document.querySelector('#npc-a .npc__initial')).display`) === 'none')
+}
+
 // ── 10. no page errors at all ──
 {
   const errs = consoleLogs.filter((l) => l.startsWith('PAGE EXCEPTION'))

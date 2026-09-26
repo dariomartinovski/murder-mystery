@@ -6,37 +6,43 @@ PASS  0. transform transition is 0.3s ease-in-out
 PASS  0. no horizontal overflow from the parked panel
 PASS  0. closed panel does not intercept scene clicks
 PASS  1. table-a: arrives at approach then opens panel
-PASS  3. table-a: name / initial / avatar colour correct
+PASS  3. table-a: renamed and portrait shown in the header
+PASS  3. table-a: avatar colour correct
 PASS  3. table-a: state tracks the npc
 PASS  3. table-a: opens on its state-aware entry node
 PASS  3. table-a: node text typed out in full
 PASS  3. table-a: all visible options rendered
 PASS  1. table-b: arrives at approach then opens panel
-PASS  3. table-b: name / initial / avatar colour correct
+PASS  3. table-b: renamed and portrait shown in the header
+PASS  3. table-b: avatar colour correct
 PASS  3. table-b: state tracks the npc
 PASS  3. table-b: opens on its state-aware entry node
 PASS  3. table-b: node text typed out in full
 PASS  3. table-b: all visible options rendered
 PASS  1. table-c: arrives at approach then opens panel
-PASS  3. table-c: name / initial / avatar colour correct
+PASS  3. table-c: renamed and portrait shown in the header
+PASS  3. table-c: avatar colour correct
 PASS  3. table-c: state tracks the npc
 PASS  3. table-c: opens on its state-aware entry node
 PASS  3. table-c: node text typed out in full
 PASS  3. table-c: all visible options rendered
 PASS  1. table-d: arrives at approach then opens panel
-PASS  3. table-d: name / initial / avatar colour correct
+PASS  3. table-d: renamed and portrait shown in the header
+PASS  3. table-d: avatar colour correct
 PASS  3. table-d: state tracks the npc
 PASS  3. table-d: opens on its state-aware entry node
 PASS  3. table-d: node text typed out in full
 PASS  3. table-d: all visible options rendered
 PASS  1. bar: arrives at approach then opens panel
-PASS  3. bar: name / initial / avatar colour correct
+PASS  3. bar: renamed and portrait shown in the header
+PASS  3. bar: avatar colour correct
 PASS  3. bar: state tracks the npc
 PASS  3. bar: opens on its state-aware entry node
 PASS  3. bar: node text typed out in full
 PASS  3. bar: all visible options rendered
 PASS  1. door-wc: arrives at approach then opens panel
-PASS  3. door-wc: name / initial / avatar colour correct
+PASS  3. door-wc: no portrait falls back to the initial
+PASS  3. door-wc: avatar colour correct
 PASS  3. door-wc: state tracks the npc
 PASS  3. door-wc: opens on its state-aware entry node
 PASS  3. door-wc: node text typed out in full
@@ -82,6 +88,16 @@ PASS  13. timers quiesce after rapid open/close cycling
 PASS  13. text frozen after rapid cycling (no orphaned interval)
 PASS  13. panel left closed after rapid cycling
 PASS  14. no uncaught page exceptions
+PASS  16. dialogue open with Goran before expanding
+PASS  16. clicking the portrait opens the lightbox
+PASS  16. lightbox shows the right image and caption
+PASS  16. lightbox paints above the dialogue panel
+PASS  16. opening the lightbox does not close the dialogue
+PASS  16. clicking the backdrop closes the lightbox
+PASS  16. dialogue still open underneath
+PASS  16. Escape closes the lightbox but not the dialogue
+PASS  16. a second Escape closes the dialogue
+PASS  16. only talked-to portraits are requested
 PASS  15. Phase 1 element counts intact
 PASS  15. Phase 1+2 ids all present
 PASS  15. scene still exactly 960x640
@@ -95,7 +111,7 @@ PASS  15. Phase 1 CSS palette untouched
 PASS  15. Phase 4 handleOption placeholder fully replaced
 PASS  15. Phase 6 replaced all three puzzle placeholders
 
-95/95 passed
+111/111 passed
 
 Page console:
   [warning] No dialogue defined for: door-exit

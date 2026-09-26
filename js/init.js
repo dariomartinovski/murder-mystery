@@ -77,6 +77,18 @@ async function initGame() {
     document.getElementById('screen-restaurant').style.visibility = 'visible'
     initAudio()
     startAmbient()
+    loadScenePortraits()
+  })
+}
+
+// ── Scene portraits ──
+// The seated circles carry data-portrait instead of src so nothing is
+// fetched during the loading screen or the intro. A missing file drops
+// back to the letter initial rather than a broken icon.
+function loadScenePortraits() {
+  document.querySelectorAll('.npc__portrait[data-portrait]').forEach((img) => {
+    img.onerror = () => img.removeAttribute('src')
+    img.src = img.dataset.portrait
   })
 }
 

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat)",
+      "Bash(/* *)",
+      "Bash(scene *)",
+      "Bash(src *)",
+      "Bash(see *)",
+      "Bash(so *)"
+    ]
+  },
+  "$version": 4
+}

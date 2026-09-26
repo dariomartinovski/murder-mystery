@@ -570,3 +570,30 @@ body {
   /* added in a later phase */
 }
 
+
+/* =========================================================
+   SCENE PORTRAITS — the seated circles show the character art.
+   src is assigned after the opening narration (see js/init.js)
+   so the first paint doesn't pay for five ~2MB decodes; until
+   then the letter initial shows instead.
+   ========================================================= */
+.npc__portrait {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.npc__portrait[src] {
+  display: block;
+}
+
+/* once a portrait is actually showing, the letter steps aside */
+.npc__portrait[src] + .npc__initial {
+  display: none;
+}

@@ -86,7 +86,8 @@ function revealNextLine() {
   })
 
   // Delay before next line — longer for highlight lines, shorter for normal
-  const delay = lineData.highlight ? 900 : lineData.italic ? 620 : 500
+  // const delay = lineData.highlight ? 900 : lineData.italic ? 620 : 500
+  const delay = lineData.highlight ? 2300 : lineData.italic ? 2000 : 1900
   narrationTimer = setTimeout(revealNextLine, delay)
 }
 

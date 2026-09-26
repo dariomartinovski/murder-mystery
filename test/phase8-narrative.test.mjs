@@ -152,7 +152,7 @@ rec('1. narration sits above every game layer',
 await sleep(2500)
 n = await narr()
 rec('2. lines reveal progressively, not all at once',
-  n.total > 3 && n.total < n.expected && n.continueVisible === false, JSON.stringify(n))
+  n.total >= 2 && n.total < n.expected && n.continueVisible === false, JSON.stringify(n))
 rec('2. revealed lines are marked visible', n.visible > 0 && n.visible <= n.total, JSON.stringify(n))
 await sleep(1500)
 const n2 = await narr()
