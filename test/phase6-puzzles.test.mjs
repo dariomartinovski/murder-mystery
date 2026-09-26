@@ -238,12 +238,34 @@ rec('10. the newer toast then expires on its own', (await toastState()).visible 
 // ══════════════════════════════════════════
 await evaluate(`addToInventory('binaryNote')`); await sleep(150)
 await openItem('binaryNote')
+// guard the puzzle's own arithmetic: the four terms on the note must total
+// 00010111, otherwise the '23' answer below is unreachable
+rec('5. the note\'s column sum totals 00010111 = 23', await evaluate(`(() => {
+  const rows = [...document.querySelectorAll('.binary-sum__row')]
+    .map(r => ({ op: r.querySelector('.binary-sum__op').textContent.trim(),
+                 val: r.querySelector('.binary-sum__val').textContent.trim() }))
+    .filter(r => /^[01]+$/.test(r.val))
+  let total = 0
+  rows.forEach((r, i) => { const n = parseInt(r.val, 2); total += (i === 0 || r.op === '+') ? n : -n })
+  return JSON.stringify({ n: rows.length, total, bits: total.toString(2).padStart(8, '0') })
+})()`) === '{"n":4,"total":23,"bits":"00010111"}',
+  await evaluate(`document.querySelector('.binary-sum').textContent.replace(/\\s+/g, ' ').trim()`))
+rec('5. the note hides the total behind a blank answer line',
+  await evaluate(`/_{8}/.test(document.querySelector('.binary-sum__row--answer').textContent)`) === true)
 await setType('#puzzle-binary-input', '24')
 await clickSel('#puzzle-binary-submit'); await sleep(200)
 fb = await feedback('puzzle-binary-feedback')
-rec('5. wrong binary gives the right-to-left nudge',
-  fb.cls === 'puzzle-feedback puzzle-feedback--wrong' && /doubles in value/.test(fb.text), JSON.stringify(fb))
+rec('5. wrong binary gives the column-sum nudge',
+  fb.cls === 'puzzle-feedback puzzle-feedback--wrong' && /carry when a column reaches two/.test(fb.text), JSON.stringify(fb))
 rec('5. wrong binary leaves it unsolved', await evaluate(`G.solvedBinary`) === false)
+
+// she worked the sum but stopped one step short of the decimal answer
+await setType('#puzzle-binary-input', '10111')
+await clickSel('#puzzle-binary-submit'); await sleep(200)
+fb = await feedback('puzzle-binary-feedback')
+rec('5. the binary total is recognised but not accepted',
+  fb.cls === 'puzzle-feedback puzzle-feedback--wrong' && /convert it to decimal/.test(fb.text) &&
+  await evaluate(`G.solvedBinary`) === false, JSON.stringify(fb))
 
 await setType('#puzzle-binary-input', '23')
 await clickSel('#puzzle-binary-submit'); await sleep(400)
@@ -282,12 +304,12 @@ await evaluate(`closeDialogue()`)
 await evaluate(`G.solvedBinary = true`)
 
 await openNpc('table-d')
-rec('8. after solvedBinary, Table D opens on d_unlocked',
-  await evaluate(`dialogueState.currentNodeId`) === 'd_unlocked', await evaluate(`dialogueState.currentNodeId`))
-await pickUntil('.dialogue__option', 'G.tableDConfirmed === true')   // -> d_reconfirm
+rec('8. after solvedBinary, Table D opens on d_ready',
+  await evaluate(`dialogueState.currentNodeId`) === 'd_ready', await evaluate(`dialogueState.currentNodeId`))
+await pickUntil('.dialogue__option', 'G.tableDConfirmed === true')   // -> d_number
 rec('8. confirming sets G.tableDConfirmed',
   await evaluate(`G.tableDConfirmed`) === true &&
-  await evaluate(`dialogueState.currentNodeId`) === 'd_reconfirm')
+  await evaluate(`dialogueState.currentNodeId`) === 'd_number')
 await evaluate(`closeDialogue()`)
 
 // ══════════════════════════════════════════

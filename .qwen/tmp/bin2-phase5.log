@@ -1,0 +1,66 @@
+PASS  1. inventory bar present and pinned to the scene bottom
+PASS  1. bar sits above the vignette
+PASS  1. empty on load
+PASS  1. ITEMS defines all three items up front
+PASS  2. pop-in class applied on arrival
+PASS  2. note lands in inventory via the dialogue onEnter
+PASS  2. slot shows the 📄 icon with label + a11y attrs
+PASS  2. pop-in class clears after the animation
+PASS  3. hover reveals the tooltip with the item label
+PASS  3. tooltip hides when not hovering
+PASS  4. clicking the slot opens the modal with the right title
+PASS  4. modal is the topmost layer
+PASS  4. card pop-in animation is live while open
+PASS  5. front shows 16 — 8 — 16
+PASS  5. front shows the signature — D
+PASS  5. back is hidden until flipped
+PASS  6. SOS input and Decode button present and visible
+PASS  7. a wrong submit answers with a nudge and does not crash
+PASS  7. a wrong submit does not solve the puzzle
+PASS  7. modal still open after a submit
+PASS  7. Enter in the input triggers submit
+PASS  8. "Turn over" reveals the back
+PASS  8. back carries the periodic-table grid
+PASS  8. back carries the T7 pattern
+PASS  8. flip button label swapped
+PASS  9. "Turn back" hides the back again
+PASS  9. flip button label restored
+PASS  10. close button closes the modal
+PASS  10. backdrop click closes the modal
+PASS  10. Escape closes the modal
+PASS  16. modal and dialogue coexist
+PASS  16. modal paints above the dialogue panel
+PASS  16. hit-testing at centre lands in the modal
+PASS  16. first Escape closes only the modal
+PASS  16. second Escape then closes the dialogue
+PASS  15. floor click while modal open does not move her
+PASS  15. that click did not close the modal either
+PASS  15. floor click works again once closed
+PASS  15. she cannot walk behind the inventory bar
+PASS  11. b_unlocked onEnter adds the binary note
+PASS  11. no inventory log left behind (placeholder replaced)
+PASS  11. two slots now, in pickup order
+PASS  11. pickup order preserved
+PASS  12. binary modal title is Torn Paper
+FAIL  12. shows the 8-bit sequence  :: 
+PASS  12. has its own submit input
+PASS  13. binary Submit answers a wrong guess with a nudge, no crash
+PASS  13. switching items swaps content ids cleanly
+PASS  14. receipt is defined with a builder
+PASS  14. only the Phase 7 phone adds the receipt, from openPhoneModal
+PASS  14. opening the receipt directly renders without error
+PASS  14. receipt can be added without error when asked
+PASS  14. unknown item id warns and does not crash
+PASS  14. duplicate adds collapse to one slot
+PASS  17. the two Phase 4 placeholders are gone
+PASS  17. both onEnter hooks call addToInventory
+PASS  17. Phase 1-4 internals intact
+PASS  17. still one script, last child of body
+PASS  17. scene still exactly 960x640
+PASS  17. scene tail is inventory then toast (item modal lifted to body in Phase 7)
+PASS  ERR. no uncaught exceptions or console errors
+
+60/61 passed
+
+Failures:
+  - 12. shows the 8-bit sequence :: 

@@ -391,7 +391,9 @@ rec('11. pickup order preserved', s.slots.map(x => x.id).join(',') === 'binaryNo
 await evaluate(`openItemModal('binaryNote')`); await sleep(400)
 s = await state()
 rec('12. binary modal title is Torn Paper', s.modalTitle === 'Torn Paper', s.modalTitle)
-rec('12. shows the 8-bit sequence', /0 0 0 1 0 1 1 1/.test(s.modalHTML), '')
+rec('12. shows the binary column sum with the total withheld',
+  /101101[\s\S]*11010[\s\S]*111100[\s\S]*1100/.test(s.modalHTML) &&
+  !/00010111/.test(s.modalHTML), '')
 rec('12. has its own submit input',
   await evaluate(`!!document.getElementById('puzzle-binary-input') && !!document.getElementById('puzzle-binary-submit')`))
 consoleLogs.length = 0

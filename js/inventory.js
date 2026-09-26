@@ -234,18 +234,33 @@ function buildBinaryNote() {
   return `
     <p style="font-size:0.82rem; color:rgba(244,220,180,0.6); margin-bottom:1rem;">
       A torn corner of a notebook page.
-      Written in neat, small handwriting — all ones and zeros.
+      Written in neat, small handwriting — a sum, worked out entirely in ones and zeros.
     </p>
 
-    <div class="binary-sequence">
-      0 0 0 1 0 1 1 1
+    <div class="binary-sum">
+      <div class="binary-sum__row">
+        <span class="binary-sum__op"></span><span class="binary-sum__val">101101</span>
+      </div>
+      <div class="binary-sum__row">
+        <span class="binary-sum__op">+</span><span class="binary-sum__val">11010</span>
+      </div>
+      <div class="binary-sum__row">
+        <span class="binary-sum__op">&minus;</span><span class="binary-sum__val">111100</span>
+      </div>
+      <div class="binary-sum__row">
+        <span class="binary-sum__op">+</span><span class="binary-sum__val">1100</span>
+      </div>
+      <div class="binary-sum__rule"></div>
+      <div class="binary-sum__row binary-sum__row--answer">
+        <span class="binary-sum__op">=</span><span class="binary-sum__val">________</span>
+      </div>
     </div>
 
     <p style="font-size:0.78rem; color:rgba(244,220,180,0.45); text-align:center; margin-bottom:1rem;">
-      (8 bits — one binary number)
+      (all binary — the answer is eight bits)
     </p>
 
-    <p class="puzzle-prompt">Convert binary to decimal.</p>
+    <p class="puzzle-prompt">Work the sum, then convert the result to decimal.</p>
     <div class="puzzle-input-row">
       <input
         class="puzzle-input"
@@ -294,7 +309,6 @@ function buildReceipt() {
         <span>TOTAL</span><span>430den</span>
       </div>
       <div style="border-top:1px solid rgba(244,220,180,0.1); margin-top:0.75rem; padding-top:0.75rem; color:rgba(244,220,180,0.5); font-size:0.72rem;">
-        <span style="color:rgba(244,168,67,0.6);">// scribbled in pen:</span><br>
         let word = "margarita"<br>
         while (tacos >= 0) {<br>
         &nbsp;&nbsp;note_pw += word[tacos]<br>
@@ -304,9 +318,6 @@ function buildReceipt() {
       </div>
     </div>
 
-    <p class="puzzle-prompt">
-      If tacos = 2, trace the loop. What is note_pw?
-    </p>
     <div class="puzzle-input-row">
       <input
         class="puzzle-input"
@@ -404,12 +415,17 @@ function wirePuzzleInputs(itemId) {
         // Narrative consequence
         onBinarySolved()
 
+      } else if (answer === '10111' || answer === '00010111') {
+        // She worked the sum correctly but stopped one step short
+        feedback.textContent = 'That\'s the right total. Now convert it to decimal.'
+        feedback.className   = 'puzzle-feedback puzzle-feedback--wrong'
+
       } else if (answer.length === 0) {
-        feedback.textContent = 'Convert each bit position to its decimal value and add them up.'
+        feedback.textContent = 'Work it as a column sum, top to bottom. Then convert the result to decimal.'
         feedback.className   = 'puzzle-feedback puzzle-feedback--wrong'
 
       } else {
-        feedback.textContent = 'Not quite. Start from the right — each position doubles in value.'
+        feedback.textContent = 'Not quite. Add and subtract in binary — you carry when a column reaches two.'
         feedback.className   = 'puzzle-feedback puzzle-feedback--wrong'
       }
     })

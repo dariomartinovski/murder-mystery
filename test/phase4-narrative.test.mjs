@@ -212,7 +212,7 @@ rec('13. no orphaned unreachable nodes', graph.orphans.length === 0, JSON.string
 rec('13. entryNode resolves under every flag combination',
   !graph.problems.some((p) => p.includes('entryNode')), JSON.stringify(graph.problems.filter((p) => p.includes('entryNode')).slice(0, 5)))
 rec('13. six NPCs, full trees present',
-  graph.npcCount === 6 && graph.totalNodes === 34, JSON.stringify(graph.counts))
+  graph.npcCount === 6 && graph.totalNodes === 33, JSON.stringify(graph.counts))
 rec('13. door-exit still has no NPCS entry', await evaluate(`!('door-exit' in NPCS) && !('door-exit' in NODES)`))
 
 // ══════════════════════════════════════════
@@ -302,8 +302,11 @@ rec('4. he describes the dark-jacket man and writes it in binary',
 p = await clickOption(0)
 rec('4. asking for help decoding advances to b_hint', p.nodeId === 'b_hint', p.nodeId)
 await waitTyped()
-rec('4. b_hint teaches binary->decimal and names 23',
-  /00010111/.test((await panel()).text) && /twenty-three/.test((await panel()).text), (await panel()).text.slice(0, 90))
+rec('4. b_hint teaches the column-sum method and no longer names the answer',
+  /carry when a column reaches two/.test((await panel()).text) &&
+  /convert it to decimal/.test((await panel()).text) &&
+  !/00010111/.test((await panel()).text) && !/twenty-three/.test((await panel()).text),
+  (await panel()).text.slice(0, 90))
 
 await resetG(); await setG({ decodedSOS: true, solvedBinary: true })
 p = await openNpc('table-b')
@@ -380,7 +383,7 @@ rec('6. c_revisit_no repeats where the phone was left',
   /table seven or eight/.test((await panel()).text) && /garden side/.test((await panel()).text))
 
 // ══════════════════════════════════════════
-// 7/8. Table D — the number 23
+// 7/8. Table D — close-mouthed until she has the number
 // ══════════════════════════════════════════
 await resetG()
 p = await openNpc('table-d')
@@ -389,42 +392,43 @@ await waitTyped()
 rec('7. d_intro reads as a man just back from outside',
   /Just arrived/.test((await panel()).text) && /wash my hands/.test((await panel()).text))
 p = await clickOption(0)
-rec('7. asking about the toilet advances to d_nothing', p.nodeId === 'd_nothing', p.nodeId)
+rec('7. pre-binary, asking about the toilet advances to d_vague', p.nodeId === 'd_vague', p.nodeId)
 await waitTyped()
-rec('7. d_nothing mentions a man in a dark jacket in a hurry',
-  /dark jacket/.test((await panel()).text) && /in a hurry/.test((await panel()).text))
-p = await clickOption(0)
-rec('7. pressing for detail advances to d_detail', p.nodeId === 'd_detail', p.nodeId)
-await waitTyped()
-rec('7. d_detail produces the number twenty-three',
-  /Twenty-three/.test((await panel()).text) && /jacket had a number/.test((await panel()).text), (await panel()).text.slice(0, 90))
-rec('7. both d_detail options lead to d_confirm',
-  await evaluate(`NODES['table-d']['d_detail'].options.every(o => o.next === 'd_confirm')`))
-p = await clickOption(0)
-rec('7. d_confirm onEnter sets G.tableDConfirmed', p.G.tableDConfirmed === true, JSON.stringify(p.G.tableDConfirmed))
-rec('7. reaches d_confirm', p.nodeId === 'd_confirm', p.nodeId)
+rec('7. pre-binary he volunteers nothing — no coat, no number',
+  !/coat|jacket|Twenty-three|\b23\b/i.test((await panel()).text) && /Nobody/.test((await panel()).text),
+  (await panel()).text.slice(0, 120))
+rec('7. pre-binary conversation leaves G.tableDConfirmed false', p.G.tableDConfirmed === false)
+rec('7. no pre-binary node mentions the coat or the number',
+  await evaluate(`['d_intro','d_vague'].every(id => !/coat|jacket|Twenty-three|\\b23\\b/i.test(NODES['table-d'][id].npcText))`))
 
-// after binary solved but before confirming: d_unlocked
+// after the binary puzzle she can ask the right question, and he confirms
 await resetG(); await setG({ solvedBinary: true })
 p = await openNpc('table-d')
-rec('8. solvedBinary + unconfirmed opens d_unlocked', p.nodeId === 'd_unlocked', p.nodeId)
+rec('8. solvedBinary + unconfirmed opens d_ready', p.nodeId === 'd_ready', p.nodeId)
+rec('8. d_ready offers the numbered-shirt question',
+  p.options.some((o) => /number on his shirt/.test(o)), JSON.stringify(p.options))
 p = await clickOption(0)
-rec('8. d_unlocked -> d_reconfirm', p.nodeId === 'd_reconfirm', p.nodeId)
+rec('8. asking about the numbered shirt reaches d_number', p.nodeId === 'd_number', p.nodeId)
 await waitTyped()
-rec('8. d_reconfirm repeats 23 and points at the back door',
-  /Twenty-three/.test((await panel()).text) && /door back there/.test((await panel()).text))
-rec('8. d_reconfirm also sets G.tableDConfirmed', p.G.tableDConfirmed === true)
+rec('8. d_number confirms the dark coat and the 23',
+  /dark coat/.test((await panel()).text) && /Twenty-three/.test((await panel()).text),
+  (await panel()).text.slice(0, 160))
+rec('8. d_number onEnter sets G.tableDConfirmed', p.G.tableDConfirmed === true, JSON.stringify(p.G.tableDConfirmed))
+p = await clickOption(0)
+rec('8. asking which way he went reaches d_direction', p.nodeId === 'd_direction', p.nodeId)
+await waitTyped()
+rec('8. d_direction points at the back door and the patio',
+  /door back there/.test((await panel()).text) && /patio/.test((await panel()).text),
+  (await panel()).text.slice(0, 140))
 
-// fully confirmed: d_done
+// fully confirmed: d_done, and it wins over d_ready
 await resetG(); await setG({ tableDConfirmed: true })
 p = await openNpc('table-d')
 rec('8. tableDConfirmed opens d_done', p.nodeId === 'd_done', p.nodeId)
-// d_done wins over d_unlocked even when solvedBinary is also set
 await resetG(); await setG({ solvedBinary: true, tableDConfirmed: true })
 p = await openNpc('table-d')
-rec('8. d_done takes precedence over d_unlocked', p.nodeId === 'd_done', p.nodeId)
+rec('8. d_done takes precedence over d_ready', p.nodeId === 'd_done', p.nodeId)
 
-// ══════════════════════════════════════════
 // 9/10/11. Marko — dead end first, hint last
 // ══════════════════════════════════════════
 await resetG()
@@ -544,9 +548,9 @@ p = await openNpc('door-wc');            path.push(p.nodeId); await clickOption(
 
 p = await openNpc('table-a');            await clickOption(0); path.push('note:' + (await panel()).G.foundNote)
 p = await openNpc('table-c');            await clickOption(0); await clickOption(0); await clickOption(0); path.push('C:' + (await panel()).nodeId)
-p = await openNpc('table-d');            await clickOption(0); await clickOption(0); await clickOption(0); path.push('D:' + (await panel()).G.tableDConfirmed)
 await setG({ decodedSOS: true, solvedBinary: true })   // Phase 6 puzzles
 p = await openNpc('table-b');            path.push('B:' + p.nodeId); await clickOption(0); path.push('Bhint:' + (await panel()).nodeId)
+p = await openNpc('table-d');            path.push('D:' + p.nodeId); await clickOption(0); path.push('Dnum:' + (await panel()).G.tableDConfirmed)
 p = await openNpc('bar');                path.push('W:' + p.nodeId)
 const endState = await evaluate(`({ patio: G.patioUnlocked, hint: G.waiterHintGiven,
   note: G.foundNote, dConf: G.tableDConfirmed, cVis: G.tableCVisited, wc: G.visitedToilet,

@@ -1,0 +1,14 @@
+PASS  1. inventory bar present and pinned to the scene bottom
+PASS  1. bar sits above the vignette
+PASS  1. empty on load
+PASS  1. ITEMS defines all three items up front
+FAIL  2. pop-in class applied on arrival  :: 
+FAIL  2. note lands in inventory via the dialogue onEnter  :: []
+file:///Users/dario.martinovski/murder-mystery/test/phase5-inventory.test.mjs:220
+  s.slots[0].icon === '📄' && s.slots[0].label === 'Folded Note' &&
+             ^
+
+TypeError: Cannot read properties of undefined (reading 'icon')
+    at file:///Users/dario.martinovski/murder-mystery/test/phase5-inventory.test.mjs:220:14
+
+Node.js v22.23.1

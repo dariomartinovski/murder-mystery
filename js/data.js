@@ -267,8 +267,6 @@ He tears a corner from his notebook and slides it over.`,
     'b_hint': {
       id: 'b_hint',
       npcText: `"Sure. Each group of eight ones and zeros is one number.
-Convert binary to decimal and you have it.
-00010111 for example — that's twenty-three."
 He shrugs.
 "Sorry I can't be more useful. Good luck finding your friend."`,
       options: [
@@ -293,7 +291,6 @@ He looks at you with genuine curiosity.
 
   // ═══════════════════════════════════════
   // TABLE C — The Distracted Man
-  // Mentions PIN system, realizes phone is gone.
   // ═══════════════════════════════════════
   'table-c': {
 
@@ -313,14 +310,14 @@ irritated expression. He looks up.`,
 
     'c_nothing': {
       id: 'c_nothing',
-      npcText: `"Unusual? No, I — actually, hang on."
+      npcText: `"Unusual? No, I - actually, hang on."
 He pats his jacket again, then his trouser pockets.
 "Sorry, I'm distracted. I think I've lost my phone."
-He looks genuinely stressed now.`,
+He looks genuinely stressed now"`,
       onEnter: () => { G.tableCVisited = true },
       options: [
-        { text: 'Where did you last have it?',
-          next: 'c_where' },
+        { text: 'Hmm, do you know where you had it last?',
+          next: 'c_it'   },
         { text: 'I\'m sorry to hear that.',
           next: null      }
       ]
@@ -328,49 +325,31 @@ He looks genuinely stressed now.`,
 
     'c_phone': {
       id: 'c_phone',
-      npcText: `"I think I've lost my phone. I stepped out for a smoke and
-I must have left it on the table outside."
-He pats his jacket again, as if it might have migrated back.`,
+      npcText: `"I think I've lost my phone. It must be here somewhere, did you he mention something about a phone ?"`,
       onEnter: () => { G.tableCVisited = true },
       options: [
-        { text: 'Where did you last have it?',
-          next: 'c_where' },
+        { text: 'No, do you know where you had it last?',
+          next: 'c_it'   },
         { text: 'I hope you find it.',
           next: null      }
       ]
     },
 
-    'c_where': {
-      id: 'c_where',
-      npcText: `He closes his eyes, retracing the evening.
-"A smoke, before dinner. I sat at one of the tables outside —
-seven or eight, near the garden side."
-His eyes open, worried.
-"Black case. Cracked screen, bottom-right corner.
-If it's still there."`,
+    'c_it': {
+      id: 'c_it',
+      npcText: `"Let me think. I had a peace of steak, some ceaser salad, then i looked at my phone. The, I wanted to grab a ciggarette, so I might have had it before I stepped out. Then I came back in, tried to look at the time, but i didnt have my phone."`,
       options: [
-        { text: 'I\'ll check outside. If it\'s there, I\'ll bring it back.',
+        { text: 'If I find it outside I\'ll bring it back.',
           next: 'c_thanks' },
-        { text: 'Could someone get into it?',
-          next: 'c_locked'  }
-      ]
-    },
-
-    'c_locked': {
-      id: 'c_locked',
-      npcText: `"Locked, thank god."
-He almost smiles.
-"I'm... particular about my passcode. Nobody's getting in."
-He doesn't elaborate, and something in his face says not to ask.`,
-      options: [
-        { text: 'Your secret. I\'ll have a look outside.',
-          next: 'c_thanks' }
+        { text: 'Interesting. Thank you.',
+          next: null        }
       ]
     },
 
     'c_thanks': {
       id: 'c_thanks',
-      npcText: `"Oh — would you? That would be incredible, thank you."
+      npcText: `"Oh - would you? That would be incredible, thank you.
+Black case, cracked screen on the bottom-right corner."
 He looks genuinely relieved.`,
       options: [
         { text: 'I\'ll have a look.',
@@ -384,7 +363,7 @@ He looks genuinely relieved.`,
 "Any luck with the phone?"`,
       options: [
         {
-          text: 'Not yet — still looking.',
+          text: 'Not yet - still looking.',
           condition: () => !G.foundPhone,
           next: 'c_revisit_no'
         },

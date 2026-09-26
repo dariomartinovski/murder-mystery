@@ -317,6 +317,46 @@
   color: rgba(244, 220, 180, 0.85);
 }
 
+/* ── Binary column sum (Table B note) ── */
+.binary-sum {
+  width: fit-content;
+  margin: 1rem auto 0.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  line-height: 2;
+  color: rgba(244, 220, 180, 0.85);
+}
+
+.binary-sum__row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+}
+
+.binary-sum__op {
+  width: 1em;
+  text-align: center;
+  color: rgba(244, 168, 67, 0.65);
+}
+
+.binary-sum__val {
+  flex: 1;
+  text-align: right;
+  letter-spacing: 0.2em;
+  /* letter-spacing pads after the final glyph too — pull it back so the
+     rightmost column sits flush with the rule */
+  margin-right: -0.2em;
+}
+
+.binary-sum__rule {
+  margin: 0.15rem 0 0.15rem 1.6em;
+  border-top: 1px solid rgba(244, 220, 180, 0.25);
+}
+
+.binary-sum__row--answer .binary-sum__val {
+  color: rgba(244, 220, 180, 0.35);
+}
+
 /* =========================================================
    PHASE 6 — TOAST
    Sits above the item modal (z 300 > 200) so a narrative

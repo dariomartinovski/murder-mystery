@@ -196,8 +196,8 @@ await pressEscapeOnBody(); await sleep(350)
 
 // ── Table D confirms 23 ──
 await talkTo(620, 404)
-rec('E2E. Table D opens on d_unlocked', await evaluate(`dialogueState.currentNodeId`) === 'd_unlocked')
-await pick(0)                                // -> d_reconfirm
+rec('E2E. Table D opens on d_ready after the binary solve', await evaluate(`dialogueState.currentNodeId`) === 'd_ready')
+await pick(0)                                // -> d_number
 await closeDialoguePanel()
 rec('E2E. tableDConfirmed set', (await G()).tableDConfirmed === true)
 
