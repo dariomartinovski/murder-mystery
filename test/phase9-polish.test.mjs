@@ -144,6 +144,52 @@ rec('1. ambient is not duplicated by a second start',
   await evaluate(`(() => { const n = ambientNode; startAmbient(); return ambientNode === n })()`) === true)
 
 // ══════════════════════════════════════════
+// 1b. typing tick — dialogue per character, narration per line
+// ══════════════════════════════════════════
+rec('1b. playTypeTick exists and is safe to spam',
+  await evaluate(`typeof playTypeTick`) === 'function' &&
+  await evaluate(`(() => { try { for (let i = 0; i < 20; i++) playTypeTick(); return true } catch (e) { return false } })()`) === true)
+rec('1b. tick is gated on the mute flag in source',
+  /function playTypeTick[\s\S]{0,200}?if \(!soundEnabled \|\| !audioCtx\) return/.test(SRC))
+rec('1b. tick is throttled in source', /lastTypeTick < 0\.03/.test(SRC))
+rec('1b. dialogue typewriter ticks per character in source',
+  /typeTimer = setInterval\(\(\) => \{[\s\S]{0,80}?playTypeTick\(\)/.test(SRC))
+rec('1b. narration ticks once per revealed line in source',
+  /narrationLines\.appendChild\(lineEl\)[\s\S]{0,300}?playTypeTick\(1\.6\)/.test(SRC))
+rec('1b. the skip-to-end path does not tick',
+  !/remaining\.forEach[\s\S]{0,700}?playTypeTick/.test(SRC))
+
+// behavioural: wrap the global and count calls
+await evaluate(`window.__ticks = 0; window.__origTick = playTypeTick;
+  window.playTypeTick = function (s) { window.__ticks++; return window.__origTick(s) }`)
+
+await evaluate(`openDialogue('table-a')`); await sleep(1600)
+const dlgTicks = await evaluate(`window.__ticks`)
+rec('1b. dialogue typing actually fires ticks', dlgTicks > 5, `ticks=${dlgTicks}`)
+await evaluate(`closeDialogue()`); await sleep(400)
+
+await evaluate(`window.__ticks = 0`)
+await evaluate(`showNarration('sos-beat')`); await sleep(2600)
+const narrTicks = await evaluate(`window.__ticks`)
+const narrLines = await evaluate(`document.querySelectorAll('.narration__line').length`)
+rec('1b. narration fires one tick per landed line', narrTicks >= 2 && narrTicks <= narrLines,
+  `ticks=${narrTicks} lines=${narrLines}`)
+
+// skipping must not machine-gun: lines jump by many, ticks by at most one
+await evaluate(`window.__ticks = 0`)
+const beforeLines = narrLines
+const nc = await centreOf('#narration')
+await clickClient(nc.x, nc.y); await sleep(400)
+const afterLines = await evaluate(`document.querySelectorAll('.narration__line').length`)
+const skipTicks = await evaluate(`window.__ticks`)
+rec('1b. skipping to the end reveals lines without a tick burst',
+  afterLines > beforeLines && skipTicks <= 1, `lines ${beforeLines}->${afterLines} ticks=${skipTicks}`)
+await clickClient(nc.x, nc.y); await sleep(1000)
+rec('1b. narration dismissed cleanly after the tick test', await evaluate(`narrationActive`) === false)
+
+await evaluate(`window.playTypeTick = window.__origTick; delete window.__origTick; delete window.__ticks`)
+
+// ══════════════════════════════════════════
 // 3. custom cursor
 // ══════════════════════════════════════════
 await mouse('mouseMoved', 500, 400); await sleep(120)

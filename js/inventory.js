@@ -168,9 +168,7 @@ function buildNote() {
         </p>
         <p style="font-size:0.82rem; color:rgba(244,220,180,0.6); margin-bottom:0.75rem;">
           The other side is covered in what looks like
-          a faint printed grid — a periodic table outline,
-          almost decorative. And underneath it,
-          rows of repeating characters.
+          a faint printed grid, almost decorative.
         </p>
 
         <!-- Partial periodic table — CSS grid, numbers omitted, just element symbols -->

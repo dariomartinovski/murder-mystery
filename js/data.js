@@ -302,7 +302,7 @@ He looks at you with genuine curiosity.
       npcText: `A man sitting alone, patting his jacket pockets with a faintly
 irritated expression. He looks up.`,
       options: [
-        { text: 'Excuse me — did you see anything unusual tonight?',
+        { text: 'Excuse me, did you see anything unusual tonight?',
           next: 'c_nothing'  },
         { text: 'Are you alright?',
           next: 'c_phone'    },
@@ -316,13 +316,11 @@ irritated expression. He looks up.`,
       npcText: `"Unusual? No, I — actually, hang on."
 He pats his jacket again, then his trouser pockets.
 "Sorry, I'm distracted. I think I've lost my phone."
-He looks genuinely stressed now.
-"I stepped out for a cigarette earlier and I must have left it outside.
-Everything's on that thing."`,
+He looks genuinely stressed now.`,
       onEnter: () => { G.tableCVisited = true },
       options: [
-        { text: 'I\'m in IT — what kind of phone is it?',
-          next: 'c_it'   },
+        { text: 'Where did you last have it?',
+          next: 'c_where' },
         { text: 'I\'m sorry to hear that.',
           next: null      }
       ]
@@ -330,43 +328,49 @@ Everything's on that thing."`,
 
     'c_phone': {
       id: 'c_phone',
-      npcText: `"I've lost my phone. I stepped out for a smoke and
-I must have left it on the table outside.
-The thing is — it's locked and I have a weird PIN system."`,
+      npcText: `"I think I've lost my phone. I stepped out for a smoke and
+I must have left it on the table outside."
+He pats his jacket again, as if it might have migrated back.`,
       onEnter: () => { G.tableCVisited = true },
       options: [
-        { text: 'What kind of PIN system?',
-          next: 'c_it'   },
+        { text: 'Where did you last have it?',
+          next: 'c_where' },
         { text: 'I hope you find it.',
           next: null      }
       ]
     },
 
-    'c_it': {
-      id: 'c_it',
-      npcText: `"I always forget passwords so I set my PIN to the current time —
-hours and minutes together. Like if it's two thirty in the afternoon,
-the PIN is 1430."
-He pauses.
-"The problem is my phone got stuck on the wrong timezone
-when I was in Auckland last month. Pacific/Auckland time.
-So the screen shows New Zealand time, but the PIN I set
-was always based on Macedonian time."
-He rubs his forehead.
-"I know, I know. It works on my machine."`,
+    'c_where': {
+      id: 'c_where',
+      npcText: `He closes his eyes, retracing the evening.
+"A smoke, before dinner. I sat at one of the tables outside —
+seven or eight, near the garden side."
+His eyes open, worried.
+"Black case. Cracked screen, bottom-right corner.
+If it's still there."`,
       options: [
-        { text: 'If I find it outside I\'ll bring it back.',
+        { text: 'I\'ll check outside. If it\'s there, I\'ll bring it back.',
           next: 'c_thanks' },
-        { text: 'Interesting. Thank you.',
-          next: null        }
+        { text: 'Could someone get into it?',
+          next: 'c_locked'  }
+      ]
+    },
+
+    'c_locked': {
+      id: 'c_locked',
+      npcText: `"Locked, thank god."
+He almost smiles.
+"I'm... particular about my passcode. Nobody's getting in."
+He doesn't elaborate, and something in his face says not to ask.`,
+      options: [
+        { text: 'Your secret. I\'ll have a look outside.',
+          next: 'c_thanks' }
       ]
     },
 
     'c_thanks': {
       id: 'c_thanks',
-      npcText: `"Oh — would you? That would be incredible, thank you.
-Black case, cracked screen on the bottom-right corner.
-I think I was at one of the tables near the garden."
+      npcText: `"Oh — would you? That would be incredible, thank you."
 He looks genuinely relieved.`,
       options: [
         { text: 'I\'ll have a look.',
@@ -823,7 +827,7 @@ const NARRATIVES = {
       { text: "Go to the coat rack near the entrance." },
       { text: "He's waiting." },
       { text: '', empty: true },
-      { text: "Tomorrow. 16:00.", highlight: true },
+      { text: "Tomorrow. 20:00.", highlight: true },
     ]
   }
 

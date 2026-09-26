@@ -115,3 +115,41 @@ function toggleSound() {
 }
 
 // ─────────────────────────────────────────
+
+// ── Typing tick ──
+// A whisper-quiet keystroke: much softer than the footstep (0.12) and the
+// chime (0.08). strength lets the narration's once-per-line pen stroke sit
+// slightly above the dialogue's per-character cadence.
+let lastTypeTick = 0
+
+function playTypeTick(strength = 1) {
+  if (!soundEnabled || !audioCtx) return
+
+  // Cap the rate: at 45 chars/sec unthrottled ticks blur into a buzz
+  const now = audioCtx.currentTime
+  if (now - lastTypeTick < 0.03) return
+  lastTypeTick = now
+
+  const t    = now
+  const freq = 1400 + Math.random() * 900   // slight per-key variance
+  const osc  = audioCtx.createOscillator()
+  const filter = audioCtx.createBiquadFilter()
+  const gain = audioCtx.createGain()
+
+  osc.type = 'triangle'
+  osc.frequency.setValueAtTime(freq, t)
+  osc.frequency.exponentialRampToValueAtTime(freq * 0.6, t + 0.035)
+
+  filter.type = 'bandpass'
+  filter.frequency.value = freq
+  filter.Q.value = 0.8
+
+  gain.gain.setValueAtTime(0.022 * strength, t)
+  gain.gain.exponentialRampToValueAtTime(0.0005, t + 0.045)
+
+  osc.connect(filter)
+  filter.connect(gain)
+  gain.connect(audioCtx.destination)
+  osc.start(t)
+  osc.stop(t + 0.05)
+}

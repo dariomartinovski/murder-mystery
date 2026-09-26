@@ -44,6 +44,7 @@ function typeText(text, element, speed = 22) {
 
   typeTimer = setInterval(() => {
     element.textContent += text[i]
+    playTypeTick()
     i++
     if (i >= text.length) { clearInterval(typeTimer); typeTimer = null }
   }, speed)

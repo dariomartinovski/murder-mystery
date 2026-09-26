@@ -1,0 +1,45 @@
+PASS  1. intro narration is up on load
+PASS  1. restaurant hidden behind it
+PASS  1. chapter label is "earlier that evening"
+PASS  1. narration sits above every game layer
+PASS  2. lines reveal progressively, not all at once
+PASS  2. revealed lines are marked visible
+PASS  2. more lines appear over time
+PASS  3. first click reveals every remaining line
+PASS  3. continue prompt appears
+PASS  3. line-type classes survive the skip
+PASS  4. second click begins the fade-out
+PASS  4. panel leaves layout entirely
+PASS  4. restaurant revealed and playable
+PASS  4. clicks reach the scene after dismissal
+PASS  5. Space skips to the end
+PASS  5. Space does not scroll the page
+PASS  5. Space dismisses
+PASS  5. Enter skips to the end
+PASS  5. Enter dismisses
+PASS  11. Escape closes nothing while narration is active
+PASS  11. Escape works again once narration is gone
+PASS  12. the same panel can be shown again by a caller
+PASS  12. unknown panel warns and fires onComplete
+PASS  6. toilet dialogue opens
+PASS  6. inside the toilet
+PASS  6. toilet-beat narration plays after the dialogue closes
+PASS  6. dialogue closed before the beat
+PASS  6. dismissing returns her to the restaurant, free to play
+PASS  13. five panels defined
+PASS  13. every panel addresses her in second person
+PASS  13. the intro leans on second person
+PASS  13. chapter labels match the spec
+PASS  13. sentences stay short (no line over 90 chars)
+PASS  R. G.patioEntered added to the game state object
+PASS  R. wc_inside option carries the toilet-beat action
+PASS  R. onSOSSolved now closes the modal and narrates instead of toasting
+PASS  R. transitionToPatio gates the patio narration on first visit
+PASS  R. onChatRevealed narrates instead of auto-closing to the final screen
+PASS  R. both Escape handlers guard on narrationActive
+PASS  R. final card is the quiet landing
+PASS  R. game init hides the restaurant until the intro is dismissed
+PASS  R. body order is loading screen, mobile guard, then narration
+PASS  ERR. no uncaught exceptions or console errors
+
+43/43 passed

@@ -176,7 +176,7 @@ await skipNarration()
 
 // ── Table C for tableCVisited ──
 await talkTo(400, 426)
-await pick(0); await pick(0)                 // c_nothing -> c_it
+await pick(0); await pick(0)                 // c_nothing -> c_where
 await closeDialoguePanel()
 rec('E2E. tableCVisited set', (await G()).tableCVisited === true)
 

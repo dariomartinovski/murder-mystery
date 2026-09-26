@@ -212,7 +212,7 @@ rec('13. no orphaned unreachable nodes', graph.orphans.length === 0, JSON.string
 rec('13. entryNode resolves under every flag combination',
   !graph.problems.some((p) => p.includes('entryNode')), JSON.stringify(graph.problems.filter((p) => p.includes('entryNode')).slice(0, 5)))
 rec('13. six NPCs, full trees present',
-  graph.npcCount === 6 && graph.totalNodes === 33, JSON.stringify(graph.counts))
+  graph.npcCount === 6 && graph.totalNodes === 34, JSON.stringify(graph.counts))
 rec('13. door-exit still has no NPCS entry', await evaluate(`!('door-exit' in NPCS) && !('door-exit' in NODES)`))
 
 // ══════════════════════════════════════════
@@ -314,7 +314,7 @@ rec('5. b_done is a short closing beat',
 rec('5. b_done offers two exits, both closing', (await panel()).options.length === 2, JSON.stringify((await panel()).options))
 
 // ══════════════════════════════════════════
-// 6/14. Table C — PIN system, Auckland, revisit conditionals
+// 6/14. Table C — lost phone, garden tables, revisit conditionals
 // ══════════════════════════════════════════
 await resetG()
 p = await openNpc('table-c')
@@ -324,25 +324,36 @@ p = await clickOption(0)
 rec('6. asking about the night advances to c_nothing', p.nodeId === 'c_nothing', p.nodeId)
 rec('6. c_nothing onEnter sets G.tableCVisited', p.G.tableCVisited === true, JSON.stringify(p.G.tableCVisited))
 p = await clickOption(0)
-rec('6. offering IT help advances to c_it', p.nodeId === 'c_it', p.nodeId)
+rec('6. she asks where he last had it, and he answers', p.nodeId === 'c_where', p.nodeId)
 await waitTyped()
-const cIt = (await panel()).text
-rec('6. c_it explains the time-based PIN', /PIN to the current time/.test(cIt) && /1430/.test(cIt), cIt.slice(0, 90))
-rec('6. c_it names Pacific/Auckland vs Macedonian time',
-  /Pacific\/Auckland/.test(cIt) && /Macedonian time/.test(cIt), cIt.slice(0, 200))
+const cWhere = (await panel()).text
+rec('6. c_where names the garden tables on the FIRST visit',
+  /seven or eight/.test(cWhere) && /garden side/.test(cWhere), cWhere.slice(0, 120))
+rec('6. c_where describes the phone', /Black case/.test(cWhere) && /Cracked screen/.test(cWhere), cWhere.slice(0, 160))
+p = await clickOption(1)
+rec('6. pressing about the lock reaches c_locked', p.nodeId === 'c_locked', p.nodeId)
+await waitTyped()
+rec('6. c_locked teases without explaining',
+  /particular about my passcode/.test((await panel()).text) &&
+  !/Macedonian|1430|timezone/i.test((await panel()).text), (await panel()).text.slice(0, 120))
 p = await clickOption(0)
-rec('6. offering to look advances to c_thanks', p.nodeId === 'c_thanks', p.nodeId)
-await waitTyped()
-rec('6. c_thanks describes the phone', /Black case/.test((await panel()).text) && /cracked screen/.test((await panel()).text))
+rec('6. c_locked leads on to c_thanks', p.nodeId === 'c_thanks', p.nodeId)
 
-// the alternate route through c_phone also teaches the PIN
+// the PIN lore left Simon entirely: nothing in his tree mentions it,
+// and the phone notes still carry it
+rec('6. no node in table-c mentions the PIN mechanics',
+  await evaluate(`Object.values(NODES['table-c']).every(n => !/Macedonian|1430|timezone|PIN/i.test(n.npcText))`))
+rec('6. the lore lives in the phone notes instead',
+  SRC.includes('pw is mk time hh:mm') && SRC.includes('Pacific/Auckland'))
+
+// the alternate route through c_phone reaches the same place
 await resetG()
 p = await openNpc('table-c')
 p = await clickOption(1)
 rec('6. "Are you alright?" routes to c_phone', p.nodeId === 'c_phone', p.nodeId)
 rec('6. c_phone also sets G.tableCVisited', p.G.tableCVisited === true)
 p = await clickOption(0)
-rec('6. c_phone also reaches c_it', p.nodeId === 'c_it', p.nodeId)
+rec('6. c_phone also reaches c_where', p.nodeId === 'c_where', p.nodeId)
 
 // revisit conditionals — exactly one option per state
 const cRevisitCases = [

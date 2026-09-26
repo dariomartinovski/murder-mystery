@@ -78,6 +78,11 @@ function revealNextLine() {
 
   narrationLines.appendChild(lineEl)
 
+  // One soft pen stroke as the line lands. The skip-to-end path in
+  // dismissNarration appends lines without coming through here, so a
+  // skip never machine-guns ticks.
+  playTypeTick(1.6)
+
   // Trigger fade-in on next frame
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
