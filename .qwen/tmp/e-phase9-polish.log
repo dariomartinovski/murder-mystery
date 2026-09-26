@@ -1,0 +1,48 @@
+PASS  2. loading screen is the first thing in body
+PASS  2. loading screen shows a single pulsing dot
+PASS  2. loading screen fades out once fonts are ready
+PASS  2. intro narration is up after loading
+PASS  2. loading screen leaves layout entirely
+PASS  2. restaurant revealed after intro
+PASS  1. audio context created when the intro was dismissed
+PASS  1. ambient murmur started
+PASS  1. toggle mutes and swaps glyph
+PASS  1. muting does not walk the player
+PASS  1. toggle unmutes and restores glyph
+PASS  1. sound functions run without throwing
+PASS  1. ambient is not duplicated by a second start
+PASS  1b. playTypeTick exists and is safe to spam
+PASS  1b. tick is gated on the mute flag in source
+PASS  1b. tick is throttled in source
+PASS  1b. dialogue typewriter ticks per character in source
+PASS  1b. narration ticks once per revealed line in source
+PASS  1b. the skip-to-end path does not tick
+PASS  1b. dialogue typing actually fires ticks
+PASS  1b. narration fires one tick per landed line
+PASS  1b. skipping to the end reveals lines without a tick burst
+PASS  1b. narration dismissed cleanly after the tick test
+PASS  3. cursor follows the mouse
+PASS  3. cursor becomes visible on first move
+PASS  3. system cursor hidden over the scene
+PASS  3. ring expands over interactables
+PASS  3. ring relaxes over plain floor
+PASS  3. ring compresses on mousedown
+PASS  3. ring releases on mouseup
+PASS  3. cursor never intercepts clicks
+PASS  4. candle flickers on Our Table
+PASS  4. every NPC breathes
+PASS  4. breathing is staggered, not in sync
+PASS  4. bar backlight flickers
+PASS  4. hint pulse survives the breath animation
+PASS  4. phone glow still pulses on the patio
+PASS  5. guard hidden on a laptop-width screen
+PASS  5. guard shows on a phone-width screen
+PASS  5. game screens hidden on mobile
+PASS  5. guard message names the fix
+PASS  5. guard disappears again on a wide screen
+PASS  6. final-screen location placeholder present
+PASS  6. intro personalisation anchors present
+PASS  6. chat dessert line present for personalising
+PASS  7. no uncaught exceptions or console errors
+
+46/46 passed

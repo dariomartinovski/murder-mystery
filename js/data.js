@@ -78,7 +78,7 @@ const NPCS = {
     color:     '#7B6B5E',
     entryNode: (G) => {
       if (G.tableDConfirmed) return 'd_done'
-      if (G.solvedBinary)    return 'd_unlocked'
+      if (G.solvedBinary)    return 'd_ready'
       return 'd_intro'
     }
   },
@@ -266,9 +266,14 @@ He tears a corner from his notebook and slides it over.`,
 
     'b_hint': {
       id: 'b_hint',
-      npcText: `"Sure. Each group of eight ones and zeros is one number.
+      npcText: `"Sure. It's a sum — the rows add up like any column
+addition, just in ones and zeros. Start at the right."
+He taps the air, column by column.
+"Add each column going left. You carry when a column reaches two,
+same as normal addition. The answer comes out in binary."
 He shrugs.
-"Sorry I can't be more useful. Good luck finding your friend."`,
+"Then convert it to decimal. That's the number you want.
+Sorry I can't be more useful. Good luck finding your friend."`,
       options: [
         { text: 'Thank you.',
           next: null }
@@ -310,14 +315,14 @@ irritated expression. He looks up.`,
 
     'c_nothing': {
       id: 'c_nothing',
-      npcText: `"Unusual? No, I - actually, hang on."
+      npcText: `"Unusual? No, I — actually, hang on."
 He pats his jacket again, then his trouser pockets.
 "Sorry, I'm distracted. I think I've lost my phone."
-He looks genuinely stressed now"`,
+He looks genuinely stressed now.`,
       onEnter: () => { G.tableCVisited = true },
       options: [
         { text: 'Hmm, do you know where you had it last?',
-          next: 'c_it'   },
+          next: 'c_where' },
         { text: 'I\'m sorry to hear that.',
           next: null      }
       ]
@@ -325,31 +330,51 @@ He looks genuinely stressed now"`,
 
     'c_phone': {
       id: 'c_phone',
-      npcText: `"I think I've lost my phone. It must be here somewhere, did you he mention something about a phone ?"`,
+      npcText: `"I think I've lost my phone. It must be outside somewhere."
+He looks at you, hopeful and worried at once.
+"You haven't heard anything about a phone, have you?"`,
       onEnter: () => { G.tableCVisited = true },
       options: [
         { text: 'No, do you know where you had it last?',
-          next: 'c_it'   },
+          next: 'c_where' },
         { text: 'I hope you find it.',
           next: null      }
       ]
     },
 
-    'c_it': {
-      id: 'c_it',
-      npcText: `"Let me think. I had a peace of steak, some ceaser salad, then i looked at my phone. The, I wanted to grab a ciggarette, so I might have had it before I stepped out. Then I came back in, tried to look at the time, but i didnt have my phone."`,
+    'c_where': {
+      id: 'c_where',
+      npcText: `He closes his eyes, retracing the evening.
+"A piece of steak, some caesar salad, then I looked at the time —
+it was still there."
+"Then I wanted a cigarette, so I stepped out. Sat at one of the
+tables outside — seven or eight, near the garden side."
+His eyes open, worried.
+"Came back in, tried to check the time again. Gone.
+Black case. Cracked screen on the bottom-right corner."`,
       options: [
-        { text: 'If I find it outside I\'ll bring it back.',
+        { text: 'I\'ll check outside. If it\'s there, I\'ll bring it back.',
           next: 'c_thanks' },
-        { text: 'Interesting. Thank you.',
-          next: null        }
+        { text: 'Could someone get into it?',
+          next: 'c_locked'  }
+      ]
+    },
+
+    'c_locked': {
+      id: 'c_locked',
+      npcText: `"Locked, thank god."
+He almost smiles.
+"I'm... particular about my passcode. Nobody's getting in."
+He doesn't elaborate, and something in his face says not to ask.`,
+      options: [
+        { text: 'Your secret. I\'ll have a look outside.',
+          next: 'c_thanks' }
       ]
     },
 
     'c_thanks': {
       id: 'c_thanks',
-      npcText: `"Oh - would you? That would be incredible, thank you.
-Black case, cracked screen on the bottom-right corner."
+      npcText: `"Oh — would you? That would be incredible, thank you."
 He looks genuinely relieved.`,
       options: [
         { text: 'I\'ll have a look.',
@@ -363,7 +388,7 @@ He looks genuinely relieved.`,
 "Any luck with the phone?"`,
       options: [
         {
-          text: 'Not yet - still looking.',
+          text: 'Not yet — still looking.',
           condition: () => !G.foundPhone,
           next: 'c_revisit_no'
         },
@@ -398,11 +423,6 @@ He smiles with visible relief.`,
       ]
     }
   },
-
-  // ═══════════════════════════════════════
-  // TABLE D — Man from the Toilet
-  // Confirms shirt number 23 after binary solved.
-  // ═══════════════════════════════════════
   'table-d': {
 
     'd_intro': {
@@ -413,70 +433,60 @@ He has the slightly damp look of someone who just came in from outside.
 "Came to wash my hands before dinner. Didn't see a thing, I'm afraid."`,
       options: [
         { text: 'Did you pass anyone near the toilet?',
-          next: 'd_nothing' },
+          next: 'd_vague' },
         { text: 'Thank you anyway.',
           next: null         }
       ]
     },
 
-    'd_nothing': {
-      id: 'd_nothing',
-      npcText: `"Near the toilet? I — well."
-He thinks for a moment.
-"There was someone in the corridor as I came out.
-A man, dark jacket. He seemed to be in a hurry.
-I didn't think anything of it at the time."`,
+    // Pre-binary he genuinely has nothing to offer: no coat, no number.
+    // The 23 only means something once she has decoded it at Table B.
+    'd_vague': {
+      id: 'd_vague',
+      npcText: `He thinks about it, honestly, then shakes his head.
+"Nobody. The corridor was empty when I came out.
+Sorry — I can't help you."`,
       options: [
-        { text: 'Did you notice anything about him?',
-          next: 'd_detail'  },
-        { text: 'Thank you.',
-          next: null         }
+        { text: 'Alright. Thank you.', next: null }
       ]
     },
 
-    'd_detail': {
-      id: 'd_detail',
-      npcText: `"Not really — it was a moment, you know?
-He was heading toward the back.
-Oh — his jacket had a number on it.
-One of those sports things. Twenty-three, I think.
-Does that mean anything to you?"`,
+    // After the binary puzzle she knows what to ask for.
+    'd_ready': {
+      id: 'd_ready',
+      npcText: `He looks up as you approach, and something in your
+expression makes him put his menu down.
+"Back again? You have that look — like you've found something."`,
       options: [
-        { text: 'Yes. Thank you — this is very helpful.',
-          next: 'd_confirm' },
-        { text: 'Maybe. Thank you.',
-          next: 'd_confirm'  }
+        { text: 'Did you see anyone go past the toilet? A man with a number on his shirt?',
+          next: 'd_number' },
+        { text: 'Not yet. Thank you.',
+          next: null        }
       ]
     },
 
-    'd_confirm': {
-      id: 'd_confirm',
-      npcText: `"I hope you find who you're looking for."
-He picks up the menu with a small, sympathetic nod.`,
+    'd_number': {
+      id: 'd_number',
+      npcText: `His fork stops halfway to his plate.
+"A number — yes. Now you say it, I see it again.
+A man in a dark coat, coming out of the toilet corridor in a hurry.
+Under the coat his shirt had a number on it, like a football kit."
+He holds up two fingers, then three.
+"Twenty-three."`,
       onEnter: () => { G.tableDConfirmed = true },
       options: [
-        { text: 'Thank you.', next: null }
+        { text: 'Which way did he go?',
+          next: 'd_direction' },
+        { text: 'Thank you — that\'s exactly what I needed.',
+          next: null           }
       ]
     },
 
-    'd_unlocked': {
-      id: 'd_unlocked',
-      npcText: `He looks up as you approach.
-"Back again? Did the number help?"`,
-      options: [
-        { text: 'Yes — you mentioned a jacket with 23 on it?',
-          next: 'd_reconfirm' },
-        { text: 'Getting there. Thank you.',
-          next: null            }
-      ]
-    },
-
-    'd_reconfirm': {
-      id: 'd_reconfirm',
-      npcText: `"That's right. Twenty-three. He was moving fast —
-heading toward the back of the restaurant.
-There's a door back there that leads outside, I think."`,
-      onEnter: () => { G.tableDConfirmed = true },
+    'd_direction': {
+      id: 'd_direction',
+      npcText: `"Toward the back of the restaurant.
+There's a door back there — out to the little patio, I think.
+He went that way, and he was moving."`,
       options: [
         { text: 'The back door. Thank you.', next: null }
       ]
@@ -494,12 +504,6 @@ He looks at you over his menu with quiet concern.`,
       ]
     }
   },
-
-  // ═══════════════════════════════════════
-  // BAR — Marko the Waiter
-  // Dead end first. Useful after binary + D + C done.
-  // Unlocks patio.
-  // ═══════════════════════════════════════
   'bar': {
 
     'w_intro': {
