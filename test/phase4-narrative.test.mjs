@@ -211,9 +211,10 @@ rec('13. no dangling / malformed node references', graph.problems.length === 0, 
 rec('13. no orphaned unreachable nodes', graph.orphans.length === 0, JSON.stringify(graph.orphans))
 rec('13. entryNode resolves under every flag combination',
   !graph.problems.some((p) => p.includes('entryNode')), JSON.stringify(graph.problems.filter((p) => p.includes('entryNode')).slice(0, 5)))
-rec('13. six NPCs, full trees present',
-  graph.npcCount === 6 && graph.totalNodes === 33, JSON.stringify(graph.counts))
-rec('13. door-exit still has no NPCS entry', await evaluate(`!('door-exit' in NPCS) && !('door-exit' in NODES)`))
+rec('13. seven NPCs, full trees present',
+  graph.npcCount === 7 && graph.totalNodes === 38, JSON.stringify(graph.counts))
+rec('13. door-exit now has its locked-door entry',
+  await evaluate(`('door-exit' in NPCS) && ('door-exit' in NODES)`))
 
 // ══════════════════════════════════════════
 // 1. Toilet door — first vs second visit
@@ -302,10 +303,10 @@ rec('4. he describes the dark-jacket man and writes it in binary',
 p = await clickOption(0)
 rec('4. asking for help decoding advances to b_hint', p.nodeId === 'b_hint', p.nodeId)
 await waitTyped()
-rec('4. b_hint teaches the column-sum method and no longer names the answer',
-  /carry when a column reaches two/.test((await panel()).text) &&
+rec('4. b_hint teaches the column method and no longer names the answer',
+  /column/.test((await panel()).text) &&
   /convert it to decimal/.test((await panel()).text) &&
-  !/00010111/.test((await panel()).text) && !/twenty-three/.test((await panel()).text),
+  !/00010111/.test((await panel()).text) && !/twenty-three/i.test((await panel()).text),
   (await panel()).text.slice(0, 90))
 
 await resetG(); await setG({ decodedSOS: true, solvedBinary: true })
@@ -347,7 +348,7 @@ rec('6. c_locked leads on to c_thanks', p.nodeId === 'c_thanks', p.nodeId)
 rec('6. no node in table-c mentions the PIN mechanics',
   await evaluate(`Object.values(NODES['table-c']).every(n => !/Macedonian|1430|timezone|PIN/i.test(n.npcText))`))
 rec('6. the lore lives in the phone notes instead',
-  SRC.includes('pw is mk time hh:mm') && SRC.includes('Pacific/Auckland'))
+  SRC.includes('Chat password in mk time hh:mm') && SRC.includes('Pacific/Auckland'))
 
 // the alternate route through c_phone reaches the same place
 await resetG()
@@ -380,7 +381,8 @@ await resetG(); await setG({ tableCVisited: true })
 p = await openNpc('table-c'); p = await clickOption(0)
 await waitTyped()
 rec('6. c_revisit_no repeats where the phone was left',
-  /table seven or eight/.test((await panel()).text) && /garden side/.test((await panel()).text))
+  /six, seven/.test((await panel()).text) && /garden side/.test((await panel()).text),
+  (await panel()).text.slice(0, 120))
 
 // ══════════════════════════════════════════
 // 7/8. Table D — close-mouthed until she has the number
@@ -460,22 +462,46 @@ await resetG()
 await setG({ solvedBinary: true, tableDConfirmed: true, tableCVisited: true })
 consoleLogs.length = 0
 p = await openNpc('bar')
-rec('10. all gates met -> entry node is w_hint', p.nodeId === 'w_hint', p.nodeId)
-rec('10. w_hint onEnter sets waiterHintGiven + patioUnlocked',
+rec('10. all gates met -> entry node is the short approach beat', p.nodeId === 'w_hint', p.nodeId)
+await waitTyped()
+rec('10. the approach beat asks if she is still looking, and unlocks nothing',
+  p.options.length === 2 && /still looking/.test((await panel()).text) &&
+  p.G.waiterHintGiven === false && p.G.patioUnlocked === false &&
+  await evaluate(`document.getElementById('door-exit').classList.contains('door--active')`) === false,
+  JSON.stringify(p.options))
+p = await clickOption(1)
+rec('10. showing him the number reaches the payoff beat', p.nodeId === 'w_hint_number', p.nodeId)
+rec('10. the payoff onEnter sets waiterHintGiven + patioUnlocked',
   p.G.waiterHintGiven === true && p.G.patioUnlocked === true, JSON.stringify(p.G))
 // Phase 6 replaced the PATIO log with pulse cleanup + revealPatioDoor()
-rec('10. w_hint onEnter clears every hint pulse',
+rec('10. the payoff onEnter clears every hint pulse',
   await evaluate(`document.querySelectorAll('.npc--hint-pulse').length`) === 0)
 rec('10. PATIO placeholder log is gone from source', !SRC.includes('PATIO UNLOCKED — Phase 7 shows exit door'))
 await waitTyped()
 const wHint = (await panel()).text
-rec('10. w_hint connects 23 to a patio table number',
-  /that's a table number/.test(wHint) && /patio/.test(wHint), wHint.slice(0, 200))
+rec('10. w_hint explains the bolt and the wind',
+  /bolted/.test(wHint) && /Wind's been slamming it/.test(wHint) && /draws the bolt/.test(wHint),
+  wHint.slice(-220))
+rec('10. w_hint connects 23 to a numbered shirt on the patio',
+  /numbered shirt/.test(wHint) && /patio/.test(wHint), wHint.slice(0, 200))
 rec('10. w_hint names tables six, seven, eight',
   /Tables six, seven, eight/.test(wHint), wHint.slice(0, 400))
 rec('10. w_hint places the dark-jacket man smoking out there',
   /Having a smoke/.test(wHint) && /Dark jacket/.test(wHint))
-rec('10. w_hint offers the single patio option', (await panel()).options.length === 1, JSON.stringify((await panel()).options))
+rec('10. the payoff offers the single patio option', (await panel()).options.length === 1, JSON.stringify((await panel()).options))
+
+// the no-luck branch routes into the same payoff
+await resetG()
+await setG({ solvedBinary: true, tableDConfirmed: true, tableCVisited: true })
+p = await openNpc('bar')
+p = await clickOption(0)
+rec('10. "No luck yet." lands on its own beat', p.nodeId === 'w_hint_noluck', p.nodeId)
+rec('10. the no-luck beat still offers the number',
+  p.options.some((o) => /number 23/.test(o)), JSON.stringify(p.options))
+rec('10. no-luck alone unlocks nothing', p.G.patioUnlocked === false)
+p = await clickOption(0)
+rec('10. showing the number from no-luck reaches the payoff', p.nodeId === 'w_hint_number', p.nodeId)
+// left open on purpose: the next section's clickOption(0) walks w_hint_number -> w_patio
 
 // the exit door cue
 const door = await evaluate(`(() => {
@@ -501,13 +527,30 @@ rec('10. exit door keeps its Phase 1 frame shading', /0px 4px 12px/.test(door.sh
 rec('10. PATIO cue is visible below the door',
   door.cueText === 'PATIO →' && door.cueDisplay === 'block' && door.cueBelowDoor === true, JSON.stringify(door))
 rec('10. door handle survived the cue (not a ::after collision)', door.handleIntact === true, JSON.stringify(door.handleIntact))
-rec('10. exit door is still not clickable as an NPC', await evaluate(`!('door-exit' in NPCS)`))
 
 p = await clickOption(0)
 rec('10. patio option advances to w_patio', p.nodeId === 'w_patio', p.nodeId)
 await waitTyped()
 rec('10. w_patio tells her where the door is',
   /just past the toilet corridor/.test((await panel()).text), (await panel()).text.slice(0, 80))
+
+// close the w_patio panel, then prove the cloned door transitions not talks
+await evaluate(`closeDialogue()`); await sleep(400)
+// post-unlock the door element is cloned: its click must transition, not talk
+await evaluate(`document.getElementById('door-exit').click()`)
+await sleep(2000)
+rec('10. after the hint, clicking the door transitions without a panel',
+  await evaluate(`dialogueState.open`) === false &&
+  await evaluate(`document.getElementById('screen-patio').classList.contains('game-screen--active')`) === true,
+  `open=${await evaluate(`dialogueState.open`)}`)
+await evaluate(`transitionToRestaurant()`); await sleep(900)
+if (await evaluate(`narrationActive`)) {
+  await evaluate(`(() => { const el = document.getElementById('narration')
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true })) })()`)
+  await sleep(1000)
+}
+await evaluate(`G.patioEntered = false`)
 
 // hint already given -> w_done
 p = await openNpc('bar')
@@ -551,7 +594,7 @@ p = await openNpc('table-c');            await clickOption(0); await clickOption
 await setG({ decodedSOS: true, solvedBinary: true })   // Phase 6 puzzles
 p = await openNpc('table-b');            path.push('B:' + p.nodeId); await clickOption(0); path.push('Bhint:' + (await panel()).nodeId)
 p = await openNpc('table-d');            path.push('D:' + p.nodeId); await clickOption(0); path.push('Dnum:' + (await panel()).G.tableDConfirmed)
-p = await openNpc('bar');                path.push('W:' + p.nodeId)
+p = await openNpc('bar');                path.push('W:' + p.nodeId); await clickOption(1)
 const endState = await evaluate(`({ patio: G.patioUnlocked, hint: G.waiterHintGiven,
   note: G.foundNote, dConf: G.tableDConfirmed, cVis: G.tableCVisited, wc: G.visitedToilet,
   door: document.getElementById('door-exit').classList.contains('door--active') })`)

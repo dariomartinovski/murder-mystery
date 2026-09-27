@@ -268,9 +268,11 @@ rec('5. guard disappears again on a wide screen',
 // ══════════════════════════════════════════
 // 6. personalisation placeholders present and findable
 // ══════════════════════════════════════════
-rec('6. final-screen location placeholder present',
-  SRC.includes('Tomorrow &nbsp;·&nbsp; 16:00 &nbsp;·&nbsp; _______________') &&
-  await evaluate(`document.querySelector('.final-card__detail').textContent`).then((t) => t.includes('_______________')))
+rec('6. final-screen location is personalised (no placeholder left)',
+  !SRC.includes('_______________') &&
+  /Tomorrow\s*·\s*\d{1,2}:\d{2}\s*·\s*\S+/.test(
+    await evaluate(`document.querySelector('.final-card__detail').textContent`)),
+  await evaluate(`document.querySelector('.final-card__detail').textContent`))
 rec('6. intro personalisation anchors present',
   SRC.includes("It's a Wednesday on the last day of Spring.") &&
   SRC.includes("You're coming back from lectures.") &&

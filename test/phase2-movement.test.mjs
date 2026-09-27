@@ -298,6 +298,8 @@ for (const [id, [ax, ay]] of Object.entries(APPROACH)) {
 }
 
 // ── 7. hover styling ──
+// section 6 ends with a panel open (the locked-door beat); it would cover the bar
+await evaluate(`closeDialogue()`); await sleep(400)
 const hoverOf = async (x, y) => {
   const { cx, cy } = await clientFor(x, y)
   await mouse('mouseMoved', cx, cy)

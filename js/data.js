@@ -101,8 +101,18 @@ const NPCS = {
       if (G.visitedToilet) return 'wc_revisit'
       return 'wc_intro'
     }
+  },
+  // The patio door. A locked-door beat before G.patioUnlocked; after the
+  // unlock the element is cloned by revealPatioDoor and transitions instead.
+  'door-exit': {
+    name:      'Patio Door',
+    initial:   '🚪',
+    color:     '#3A3A3A',
+    entryNode: (G) => {
+      if (G.patioUnlocked) return 'x_open'
+      return 'x_locked'
+    }
   }
-  // door-exit is deliberately absent — it becomes the patio door in Phase 7
 }
 
 // ─────────────────────────────────────────
@@ -160,6 +170,48 @@ it didn't happen in here.`,
   },
 
   // ═══════════════════════════════════════
+  'door-exit': {
+
+    'x_locked': {
+      id: 'x_locked',
+      npcText: `You try the handle. Locked.
+The bolt is thrown from this side — from inside.
+Somewhere behind the frame, something heavy keeps banging in the wind.
+This is what that noise has been all evening.`,
+      options: [
+        { text: 'Look through the glass.', next: 'x_glass' },
+        { text: 'Step away from the door.', next: null }
+      ]
+    },
+
+    'x_glass': {
+      id: 'x_glass',
+      npcText: `You cup your hands against the narrow pane.
+Smeared glass. Dark shapes beyond it — tables, chairs,
+a garden breathing in the wind.
+Whatever is out there, it is not coming to you through a locked door.`,
+      options: [
+        { text: 'Step away.', next: null }
+      ]
+    },
+
+    'x_open': {
+      id: 'x_open',
+      npcText: `The bolt is drawn back. The door rests a finger's width open,
+and the wind keeps pushing at it, patient.`,
+      options: [
+        {
+          text: 'Step outside.',
+          next: null,
+          action: () => {
+            setTimeout(() => transitionToPatio(), 400)
+          }
+        }
+      ]
+    }
+  },
+
+
   // TABLE A — The Gentleman
   // Gives her the physical note.
   // ═══════════════════════════════════════
@@ -269,10 +321,9 @@ He tears a corner from his notebook and slides it over.`,
       npcText: `"Sure. It's a sum — the rows add up like any column
 addition, just in ones and zeros. Start at the right."
 He taps the air, column by column.
-"Add each column going left. You carry when a column reaches two,
-same as normal addition. The answer comes out in binary."
+"Add each column going left."
 He shrugs.
-"Then convert it to decimal. That's the number you want.
+"Then convert it to decimal.
 Sorry I can't be more useful. Good luck finding your friend."`,
       options: [
         { text: 'Thank you.',
@@ -407,7 +458,7 @@ He looks genuinely relieved.`,
 
     'c_revisit_no': {
       id: 'c_revisit_no',
-      npcText: `"No worries. I think it was table seven or eight — near the garden side.
+      npcText: `"No worries. I think it was table six, seven I think — near the garden side.
 Black case, cracked screen."`,
       options: [
         { text: 'I\'ll keep looking.', next: null }
@@ -571,16 +622,48 @@ He trails off with a shrug.`,
       npcText: `Marko pauses his wiping as you approach.
 Something in your expression makes him set down the cloth.
 "You're still looking for your friend."
-It isn't a question.
-You show him what you have — the number 23.
+It isn't a question. He looks genuinely worried now.`,
+      options: [
+        { text: 'No luck yet.',
+          next: 'w_hint_noluck' },
+        { text: 'Show him the number 23.',
+          next: 'w_hint_number' }
+      ]
+    },
+
+    'w_hint_noluck': {
+      id: 'w_hint_noluck',
+      npcText: `He nods slowly, like he was afraid of that.
+"Then he's not in the room. And he's not in the toilet.
+I've been watching the door all evening without meaning to."
+He dries his hands on the cloth, though they are already dry.`,
+      options: [
+        { text: 'Show him the number 23.',
+          next: 'w_hint_number' },
+        { text: 'Thank you, Marko.',
+          next: null             }
+      ]
+    },
+
+    'w_hint_number': {
+      id: 'w_hint_number',
+      npcText: `You show him what you have — the number 23.
 He stares at it for a moment.
-"Twenty-three. That's — actually, that's a table number.
+"Twenty-three. I think, I saw a guy with a numbered shirt like that on the patio earlier.
 Not inside — we have a small patio out the back. Tables six, seven, eight.
-We don't use them much in winter but..."
+We don't use them much, but..."
 He leans forward slightly.
 "There was a man out there earlier. Having a smoke.
 Dark jacket. Twenty, thirty minutes ago maybe.
-I didn't think much of it."`,
+I didn't think much of it."
+He glances toward the back corridor, then back at you, and frowns.
+"The door out there is bolted, by the way. Wind's been slamming it
+all evening — I threw the bolt after your friend went out."
+He stops. You hear it at the same moment he does:
+if it has been bolted since then, he never came back in.
+Marko walks the two steps and draws the bolt. It lifts with a clunk.`,
+      // The unlock lives here, not on the approach beat: the patio opens when
+      // he actually tells her about it, not when she merely walks up.
       onEnter: () => {
         G.waiterHintGiven = true
         G.patioUnlocked   = true
@@ -774,10 +857,10 @@ const NARRATIVES = {
       { text: "You push the door open onto a small patio." },
       { text: "Cold air. The smell of rain still in the ground." },
       { text: '', empty: true },
-      { text: "Three tables. Two of them occupied — a couple, quietly talking." },
-      { text: "The third table is empty." },
+      { text: "Three tables. Only one of them occupied — a couple, quietly talking." },
+      { text: "Two of the tables are empty." },
       { text: '', empty: true },
-      { text: "A half-finished drink." },
+      { text: "A half-finished drink on one of them." },
       { text: "An ashtray. A cigarette, long since gone cold.", italic: true },
       { text: '', empty: true },
       { text: "And a phone.", highlight: true },
@@ -810,7 +893,7 @@ const NARRATIVES = {
       { text: "Go to the coat rack near the entrance." },
       { text: "He's waiting." },
       { text: '', empty: true },
-      { text: "Tomorrow. 20:00.", highlight: true },
+      { text: "Tomorrow. 20:00, let's remake it ?", highlight: true },
     ]
   }
 

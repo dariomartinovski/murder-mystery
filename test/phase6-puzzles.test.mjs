@@ -318,9 +318,11 @@ await evaluate(`closeDialogue()`)
 await evaluate(`G.tableCVisited = true`)
 rec('9. pulses still present just before the waiter hint', (await pulses()).length === 2, JSON.stringify(await pulses()))
 await openNpc('bar')
-rec('9. all gates met -> w_hint', await evaluate(`dialogueState.currentNodeId`) === 'w_hint',
+rec('9. all gates met -> the approach beat', await evaluate(`dialogueState.currentNodeId`) === 'w_hint',
   await evaluate(`dialogueState.currentNodeId`))
-rec('9. w_hint onEnter removes every pulse', (await pulses()).length === 0, JSON.stringify(await pulses()))
+rec('9. approaching alone leaves the pulses up', (await pulses()).length === 2, JSON.stringify(await pulses()))
+await clickSel('.dialogue__option:nth-child(2)'); await sleep(700)   // show him the number
+rec('9. the payoff beat removes every pulse', (await pulses()).length === 0, JSON.stringify(await pulses()))
 const door = await evaluate(`(() => { const d = document.getElementById('door-exit')
   return { active: d.classList.contains('door--active'), shadow: getComputedStyle(d).boxShadow,
     cue: getComputedStyle(d.querySelector('.door__patio-cue')).display } })()`)

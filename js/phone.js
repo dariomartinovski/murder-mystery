@@ -197,20 +197,20 @@ function renderNoteApp() {
 
       <div class="phone-note">
         <strong>NOTE 1</strong>
-        pw is mk time hh:mm
+        Chat password in mk time hh:mm
       </div>
 
       <div class="phone-note">
         <strong>NOTE 2</strong>
         call repair shop — phone stuck on Pacific/Auckland
-        time since last trip. PIN won't work until fixed.
+        time since last trip.
       </div>
     </div>
   `
 
   // After she reads the notes, hint her to the chat app
   setTimeout(() => {
-    showPatioToast('The PIN is Macedonian time. The phone shows Auckland time.')
+    showPatioToast('Look at the phone time.')
   }, 1200)
 }
 
@@ -279,7 +279,7 @@ function updatePinDots() {
 function checkPin() {
   const feedback = document.getElementById('pin-feedback')
 
-  if (pinBuffer === '1015') {
+  if (pinBuffer === '1115') {
     // Correct — crack the chat app
     G.crackedChatApp = true
     feedback.textContent = ''

@@ -203,8 +203,10 @@ rec('E2E. tableDConfirmed set', (await G()).tableDConfirmed === true)
 
 // ── waiter gives the hint and reveals the patio ──
 await talkTo(826, 450)
-rec('E2E. waiter opens on w_hint with all gates met', await evaluate(`dialogueState.currentNodeId`) === 'w_hint',
-  await evaluate(`dialogueState.currentNodeId`))
+rec('E2E. waiter opens on the approach beat with all gates met',
+  await evaluate(`dialogueState.currentNodeId`) === 'w_hint', await evaluate(`dialogueState.currentNodeId`))
+await pick(1)                                // show him the number -> payoff + unlock
+rec('E2E. showing the number unlocks the patio', (await G()).patioUnlocked === true)
 await closeDialoguePanel()
 const doorState = await evaluate(`(() => { const d = document.getElementById('door-exit')
   return { active: d.classList.contains('door--active'), interactable: d.classList.contains('interactable'),
@@ -313,9 +315,12 @@ await clickSel('#phone-app-notes'); await sleep(300)
 const notes = await evaluate(`document.getElementById('phone-screen-content').textContent`)
 rec('8. unlocked note_app shows both notes', /NOTE 1/.test(notes) && /NOTE 2/.test(notes) &&
   /Pacific\/Auckland/.test(notes) && /mk time/.test(notes), notes.slice(0, 120))
-await sleep(1300)
-rec('8. reading the notes hints at the timezone PIN',
-  /Macedonian time/.test(await evaluate(`document.getElementById('patio-toast').textContent`)))
+let toastText = ''
+for (let i = 0; i < 20 && !/time/i.test(toastText); i++) {
+  await sleep(200)
+  toastText = await evaluate(`document.getElementById('patio-toast').textContent`)
+}
+rec('8. reading the notes nudges her toward the phone clock', /time/i.test(toastText), toastText)
 
 // ── 10/11/12. PIN keypad ──
 await clickSel('#phone-home-btn'); await sleep(200)
@@ -335,18 +340,32 @@ rec('11. wrong PIN shows feedback',
 await sleep(1000)
 rec('11. wrong PIN clears the dots after 900ms',
   await evaluate(`document.querySelectorAll('.phone-pin__dot--filled').length`) === 0)
-await tap('1'); await tap('0'); await tap('1'); await tap('5')
-await sleep(700)
-rec('12. correct PIN 1015 opens the chat app',
-  await evaluate(`phoneScreen`) === 'chat' && (await G()).crackedChatApp === true, await evaluate(`phoneScreen`))
+const enterPin = async () => { await tap('1'); await tap('1'); await tap('1'); await tap('5') }
+const waitChat = async () => {
+  for (let i = 0; i < 12 && await evaluate(`phoneScreen`) !== 'chat'; i++) await sleep(250)
+  return evaluate(`phoneScreen`)
+}
+await enterPin()
+let screen = await waitChat()
+if (screen !== 'chat') { await enterPin(); screen = await waitChat() }   // one retry for a dropped tap
+rec('12. PIN matches the lore: 22:15 Auckland minus 11h is 11:15',
+  SRC.includes("pinBuffer === '1115'") &&
+  await evaluate(`document.getElementById('phone-time').textContent`) === '22:15')
+rec('12. correct PIN 1115 opens the chat app',
+  screen === 'chat' && (await G()).crackedChatApp === true, screen)
 
 // ── 13. chat content ──
-const chat = await evaluate(`(() => ({
-  msgs: document.querySelectorAll('.phone-message').length,
-  sent: getComputedStyle(document.querySelector('.phone-message--sent .phone-message__bubble')).backgroundColor,
-  recv: getComputedStyle(document.querySelector('.phone-message--received .phone-message__bubble')).backgroundColor,
-  cta: document.getElementById('chat-cta').textContent.trim(),
-}))()`)
+const chat = await evaluate(`(() => {
+  const sb = document.querySelector('.phone-message--sent .phone-message__bubble')
+  const rb = document.querySelector('.phone-message--received .phone-message__bubble')
+  const cta = document.getElementById('chat-cta')
+  return {
+    msgs: document.querySelectorAll('.phone-message').length,
+    sent: sb ? getComputedStyle(sb).backgroundColor : null,
+    recv: rb ? getComputedStyle(rb).backgroundColor : null,
+    cta: cta ? cta.textContent.trim() : '',
+  }
+})()`)
 rec('13. three messages with blue sent / grey received bubbles and the CTA',
   chat.msgs === 3 && chat.sent === 'rgb(21, 101, 192)' && chat.recv === 'rgba(255, 255, 255, 0.08)' &&
   /coat rack/.test(chat.cta), JSON.stringify(chat))
@@ -369,8 +388,9 @@ const final = await evaluate(`(() => ({
   detail: document.querySelector('.final-card__detail').textContent,
 }))()`)
 rec('14. final card is the quiet landing', /You found him/.test(final.msg), final.msg)
-rec('17. location placeholder is present and easy to find',
-  final.detail.includes('_______________') && SRC.includes('Tomorrow &nbsp;·&nbsp; 16:00 &nbsp;·&nbsp; _______________'),
+rec('17. location is personalised — no placeholder left',
+  !final.detail.includes('_______________') && !SRC.includes('_______________') &&
+  /Tomorrow\s*·\s*\d{1,2}:\d{2}\s*·\s*\S+/.test(final.detail),
   final.detail)
 
 // ══════════════════════════════════════════

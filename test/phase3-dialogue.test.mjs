@@ -118,6 +118,16 @@ const centreOf = (sel) => evaluate(`(() => {
   const r = el.getBoundingClientRect()
   return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
 })()`)
+// poll until the typewriter has reached text matching re (or give up)
+const waitText = async (re, ms = 12000) => {
+  const t0 = Date.now()
+  let t = ''
+  for (;;) {
+    t = await evaluate(`document.getElementById('dialogue-text').textContent`)
+    if (re.test(t) || Date.now() - t0 > ms) return t
+    await sleep(200)
+  }
+}
 const clickScene = async (x, y) => {
   const { cx, cy } = await evaluate(`(() => { const s = document.querySelector('.scene'); const r = s.getBoundingClientRect()
     return { cx: r.left + s.clientLeft + ${x}, cy: r.top + s.clientTop + ${y} } })()`)
@@ -446,9 +456,10 @@ await evaluate(`openDialogue('table-d')`); await sleep(600)
 }
 
 // ══════════════════════════════════════════
-// 12. door-exit — interactable but has no dialogue until Phase 7
+// 12. door-exit — locked before the unlock, a beat not a dead end
 // ══════════════════════════════════════════
 await evaluate(`closeDialogue()`); await sleep(450)
+await resetG()
 consoleLogs.length = 0
 await clickScene(...HIT['door-exit'])
 await sleep(1400)
@@ -456,13 +467,41 @@ await sleep(1400)
   const pos = await playerAt()
   p = await panel()
   rec('12. door-exit still walks to its approach point', pos.x === 856 && pos.y === 80, JSON.stringify(pos))
-  rec('12. door-exit opens no panel (absent from NPCS)', p.open === false, `open=${p.open}`)
-  rec('12. door-exit absence is reported, not silent',
-    consoleLogs.some((l) => l.includes('No dialogue defined for') && l.includes('door-exit')),
-    JSON.stringify(consoleLogs))
-  rec('12. NPCS has no door-exit entry', await evaluate(`!('door-exit' in NPCS)`))
-  rec('12. NPCS covers the other six interactables',
-    await evaluate(`['table-a','table-b','table-c','table-d','bar','door-wc'].every(k => k in NPCS)`))
+  rec('12. pre-unlock she gets the locked-door beat',
+    p.open === true && p.nodeId === 'x_locked', `open=${p.open} node=${p.nodeId}`)
+  const lockedText = await waitText(/banging/)
+  rec('12. the beat names the bolt and the banging',
+    /Locked/.test(lockedText) && /bolt/.test(lockedText) && /banging/.test(lockedText), lockedText.slice(0, 120))
+  rec('12. no silent-fallback warning any more',
+    consoleLogs.filter((l) => l.includes('No dialogue defined for')).length === 0, JSON.stringify(consoleLogs))
+  rec('12. the locked door does not transition to the patio',
+    await evaluate(`document.getElementById('screen-restaurant').classList.contains('game-screen--active')`) === true)
+  await clickOption(0)
+  const glassText = await waitText(/Smeared glass/)
+  const g = await panel()
+  rec('12. looking through the glass reaches x_glass',
+    g.nodeId === 'x_glass' && /Smeared glass/.test(glassText), `${g.nodeId} | ${glassText.slice(0, 60)}`)
+  await evaluate(`closeDialogue()`); await sleep(400)
+
+  // once the flag flips, the entry node flips too
+  await evaluate(`G.patioUnlocked = true`)
+  await evaluate(`openDialogue('door-exit')`); await sleep(700)
+  rec('12. with patioUnlocked the entry node is x_open',
+    await evaluate(`dialogueState.currentNodeId`) === 'x_open', await evaluate(`dialogueState.currentNodeId`))
+  rec('12. x_open carries a step-outside action',
+    await evaluate(`typeof NODES['door-exit']['x_open'].options[0].action`) === 'function')
+  await clickOption(0); await sleep(1800)
+  rec('12. stepping outside from x_open transitions to the patio',
+    await evaluate(`document.getElementById('screen-patio').classList.contains('game-screen--active')`) === true)
+  await evaluate(`transitionToRestaurant()`); await sleep(900)
+  if (await evaluate(`narrationActive`)) {
+    const c = await centreOf('#narration')
+    await clickClient(c.x, c.y); await sleep(250)
+    await clickClient(c.x, c.y); await sleep(900)
+  }
+  await evaluate(`G.patioUnlocked = false; G.patioEntered = false`)
+  rec('12. NPCS covers all seven interactables',
+    await evaluate(`['table-a','table-b','table-c','table-d','bar','door-wc','door-exit'].every(k => k in NPCS)`))
 }
 
 // ══════════════════════════════════════════
