@@ -46,6 +46,11 @@ function transitionToRestaurant() {
 
   setTimeout(() => {
     restaurant.classList.add('game-screen--active')
+
+    if (G.chatRead && !G.finalPlayed) {
+      G.finalPlayed = true
+      onChatRevealed()
+    }
   }, 600)
 }
 
@@ -91,7 +96,8 @@ const phoneScreenContent = document.getElementById('phone-screen-content')
 const phoneHomeBtn       = document.getElementById('phone-home-btn')
 const phoneModalBackdrop = document.getElementById('phone-modal-backdrop')
 
-let pinBuffer = ''
+let pinBuffer  = ''
+let chatViewed = false   // she has seen the chat at least once
 
 function openPhoneModal() {
   phoneModalOpen = true
@@ -113,6 +119,13 @@ function closePhoneModal() {
   phoneModal.setAttribute('aria-hidden', 'true')
   phoneScreen = 'home'
   pinBuffer   = ''
+
+  // She has read the chat and put the phone away: arm the final sequence.
+  // It plays once she is back inside the restaurant, not out here.
+  if (chatViewed && !G.chatRead) {
+    G.chatRead = true
+    showPatioToast('The coat rack is by the entrance. Back inside.')
+  }
 }
 
 phoneModalBackdrop.addEventListener('click', closePhoneModal)
@@ -336,34 +349,30 @@ function renderChatApp() {
     </div>
   `
 
-  // Trigger the final narrative beat
-  setTimeout(() => {
-    onChatRevealed()
-  }, 800)
+  // She reads at her own pace. The final beat waits until she puts the
+  // phone down and walks back inside — see closePhoneModal / transitionToRestaurant.
+  chatViewed = true
 }
 
 // ─────────────────────────────────────────
 // PHASE 7 — FINAL REVEAL
 // ─────────────────────────────────────────
 function onChatRevealed() {
-  // Close the phone after a short beat
-  setTimeout(() => {
-    closePhoneModal()
-
-    // Show the chat reveal narration
-    setTimeout(() => {
-      showNarration('chat-reveal', () => {
-        showFinalScreen()
-      })
-    }, 400)
-  }, 1800)
+  // Called from transitionToRestaurant: the twist lands inside, once she has
+  // read the messages, put the phone down and come back in from the cold.
+  showNarration('chat-reveal', () => {
+    showFinalScreen()
+  })
 }
 
 function showFinalScreen() {
-  const patio = document.getElementById('screen-patio')
-  const final = document.getElementById('screen-final')
+  const patio      = document.getElementById('screen-patio')
+  const restaurant = document.getElementById('screen-restaurant')
+  const final      = document.getElementById('screen-final')
 
+  // The reveal can now fire from either screen, so leave both behind
   patio.classList.remove('game-screen--active')
+  restaurant.classList.remove('game-screen--active')
 
   setTimeout(() => {
     final.classList.add('game-screen--active')

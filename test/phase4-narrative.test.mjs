@@ -646,7 +646,8 @@ rec('PATH. the run produced no missing-node or condition warnings',
     await evaluate(`JSON.stringify(Object.keys(G))`) === JSON.stringify([
       'visitedToilet', 'foundNote', 'decodedSOS', 'tableBUnlocked', 'solvedBinary',
       'tableDConfirmed', 'waiterFirstVisit', 'waiterHintGiven', 'tableCVisited',
-      'patioUnlocked', 'patioEntered', 'foundPhone', 'crackedNoteApp', 'crackedChatApp']))
+      'patioUnlocked', 'patioEntered', 'foundPhone', 'crackedNoteApp', 'crackedChatApp',
+      'chatRead', 'finalPlayed']))
 }
 
 // ══════════════════════════════════════════

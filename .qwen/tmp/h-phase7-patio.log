@@ -1,0 +1,64 @@
+PASS  0. restaurant is the only active screen on load
+PASS  0. item modal was lifted to body so it works on every screen
+PASS  E2E. note collected
+PASS  E2E. SOS solved by typing
+PASS  E2E. sos-beat narration plays after solving
+PASS  E2E. tableCVisited set
+PASS  E2E. Table B opens on b_unlocked after SOS
+PASS  E2E. binaryNote collected
+PASS  E2E. binary solved by typing
+PASS  E2E. Table D opens on d_ready after the binary solve
+PASS  E2E. tableDConfirmed set
+PASS  E2E. waiter opens on the approach beat with all gates met
+PASS  E2E. showing the number unlocks the patio
+PASS  1. exit door is active, interactable and retargeted after the hint
+PASS  1. clicking the exit door fades to the patio
+PASS  1. first visit plays the patio-enter narration
+PASS  8. G.patioEntered set on first visit
+PASS  16. patio bar mirrors the restaurant bar
+PASS  2. patio player starts near the back door
+PASS  2. patio player walks to a clicked floor point
+PASS  2. clicks outside patio bounds are ignored
+PASS  3. clicking occupied table 6 does nothing
+PASS  3. clicking empty table 8 does nothing
+PASS  15. back door returns to the restaurant
+PASS  15. exit door goes back out to the patio
+PASS  8. second visit does not replay the narration
+PASS  4. clicking table 7 walks her over and opens the phone
+PASS  5. phone shows Auckland 22:15 and both apps
+PASS  5. both apps start locked
+PASS  5. cracked-screen detail renders
+PASS  6. receipt added to inventory on opening the phone
+PASS  6. receipt visible in BOTH bars
+PASS  7. note_app shows the LOCKED screen before the receipt puzzle
+PASS  9. chat_app before note_app shows a toast and stays on home
+PASS  7. backdrop closes the phone
+PASS  6. item modal opens from the patio bar (lifted to body)
+PASS  8. receipt puzzle solved from the patio
+PASS  8. unlocked note_app shows both notes
+PASS  8. reading the notes nudges her toward the phone clock
+PASS  10. chat_app now opens the PIN screen
+PASS  10. dots fill one per key
+PASS  10. backspace removes the last digit
+PASS  11. wrong PIN shows feedback
+PASS  11. wrong PIN clears the dots after 900ms
+PASS  12. PIN matches the lore: 22:15 Auckland minus 11h is 11:15
+PASS  12. correct PIN 1115 opens the chat app
+PASS  13. three messages with blue sent / grey received bubbles and the CTA
+PASS  14. the phone stays open after the chat — nothing auto-fires
+PASS  14. closing the phone arms the finale and nudges her inside
+PASS  14. no narration while she is still on the patio
+PASS  14. returning to the restaurant plays the chat-reveal narration
+PASS  14. chat-reveal carries the coat-rack message
+PASS  14. the reveal is one-shot
+PASS  14. dismissing the reveal shows the final screen
+PASS  14. final card is the quiet landing
+PASS  17. location is personalised — no placeholder left
+PASS  R1. revealPatioDoor replaced (clone + patio click handler)
+PASS  R2. PATIO UNLOCKED console.log is gone
+PASS  R. Phase 1-6 internals intact
+PASS  R. one script in markup; at runtime only the lifted item modal follows it
+PASS  R. three screens exist, restaurant first
+PASS  ERR. no uncaught exceptions or console errors across the whole run
+
+62/62 passed

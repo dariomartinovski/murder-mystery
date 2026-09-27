@@ -35,6 +35,11 @@ const G = {
   foundPhone: false,
   crackedNoteApp: false,
   crackedChatApp: false,
+
+  // Final sequence — the reveal waits for her to put the phone down and
+  // walk back inside (Phase 10 tweak)
+  chatRead: false,         // true once she closes the phone having viewed the chat
+  finalPlayed: false,      // true once the chat-reveal narration has played
 }
 
 // ─────────────────────────────────────────

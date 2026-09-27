@@ -370,16 +370,27 @@ rec('13. three messages with blue sent / grey received bubbles and the CTA',
   chat.msgs === 3 && chat.sent === 'rgb(21, 101, 192)' && chat.recv === 'rgba(255, 255, 255, 0.08)' &&
   /coat rack/.test(chat.cta), JSON.stringify(chat))
 
-// ── 14. final reveal sequence ──
-// Phase 8: +800ms reveal beat, +1800ms phone closes, +400ms chat-reveal narration
-await sleep(1200)
-rec('14. phone still open during the reveal beat', await evaluate(`phoneModalOpen`) === true)
-await sleep(2200)
-rec('14. phone closes and chat-reveal narration plays',
-  await evaluate(`phoneModalOpen`) === false && await evaluate(`narrationActive`) === true,
+// ── 14. final reveal waits for her to put the phone down and go inside ──
+await sleep(2500)
+rec('14. the phone stays open after the chat — nothing auto-fires',
+  await evaluate(`phoneModalOpen`) === true && await evaluate(`narrationActive`) === false &&
+  await evaluate(`G.chatRead`) === false,
   `phone=${await evaluate(`phoneModalOpen`)} narr=${await evaluate(`narrationActive`)}`)
+// she puts the phone away herself (backdrop click)
+await clickIn('.patio-scene', 60, 60); await sleep(600)
+rec('14. closing the phone arms the finale and nudges her inside',
+  await evaluate(`phoneModalOpen`) === false && await evaluate(`G.chatRead`) === true &&
+  /inside|entrance/i.test(await evaluate(`document.getElementById('patio-toast').textContent`)),
+  await evaluate(`document.getElementById('patio-toast').textContent`))
+rec('14. no narration while she is still on the patio', await evaluate(`narrationActive`) === false)
+// back inside
+await clickSel('#patio-back-door'); await sleep(1300)
+rec('14. returning to the restaurant plays the chat-reveal narration',
+  await evaluate(`narrationActive`) === true && await screens() === 'screen-restaurant',
+  `narr=${await evaluate(`narrationActive`)} screens=${await screens()}`)
 rec('14. chat-reveal carries the coat-rack message',
   /coat rack/.test(await evaluate(`NARRATIVES['chat-reveal'].lines.map(l => l.text).join(' ')`)))
+rec('14. the reveal is one-shot', await evaluate(`G.finalPlayed`) === true)
 await skipNarration()
 await sleep(1000)
 rec('14. dismissing the reveal shows the final screen', await screens() === 'screen-final', await screens())
